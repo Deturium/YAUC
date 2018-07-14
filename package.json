@@ -1,0 +1,19 @@
+{
+  "name": "cc98-ubb",
+  "version": "0.1.0",
+  "description": "A UBB editor for CC98.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "UBB",
+    "CC98"
+  ],
+  "author": "Hydrogen",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "7.0.0",
+    "typescript": "2.9.2"
+  }
+}
