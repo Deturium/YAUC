@@ -1,9 +1,5 @@
 import { TokenType, IToken } from './lex'
 
-interface ParseConfig {
-
-}
-
 const enum NodeType {
   /**
    * 根节点
@@ -27,6 +23,7 @@ interface INode {
  * 可以当做一个节点的父节点
  */
 type ParentNode = RootNode | TagNode
+
 /**
  * 可以当做一个节点的子节点
  */
@@ -50,9 +47,8 @@ class TextNode implements INode {
 class TagNode implements INode {
   type: NodeType = NodeType.Tag
   tagName!: string
-  // tagData: {
-  //   [propName: string]: string | number
-  // }
+  tagData!: Object
+
   parent: ParentNode
   children: ChildNode[] = []
 
@@ -63,42 +59,55 @@ class TagNode implements INode {
     this._rawText = rawText
     this.parent = parent
 
-    this.parseTag(rawText)
+    this._parseTag(rawText)
   }
 
-  parseTag(rawText: string) {
+  _parseTag(rawText: string) {
     this.tagName = rawText.slice(1, -1)
     // TODO: parse tagData
   }
 
-  close() {
-    this._isClose = true
-  }
-
-  forceClose() {
-    const children: ChildNode[] = []
-
-    const flatNode = (node: ChildNode) => {
-      if (node.type === NodeType.Tag && (node as TagNode)._isClose === false) {
-        const tagNode = node as TagNode
-        children.push(new TextNode(tagNode._rawText))
-        tagNode.children.forEach(flatNode)
-      } else {
-        children.push(node)
-      }
-    }
-
-    this.children.forEach(flatNode)
-
-    this.children = children
-    this._isClose = true
+  get text(): string {
+    // TODO: text
+    return this._rawText
   }
 }
 
+/**
+ * 关闭一个Tag节点
+ * @param node
+ * @param recursive 是否递归闭合子节点
+ */
+function close(node: TagNode, recursive = false): void {
+  node._isClose = true
+  if (!recursive)
+    return
 
-export function parse(tokenFlow: IToken[], parseConfig?: ParseConfig): RootNode {
+  const children: ChildNode[] = []
+
+  const flat = (child: ChildNode) => {
+    if (child.type === NodeType.Tag && (child as TagNode)._isClose === false) {
+      const tagNode = child as TagNode
+      children.push(new TextNode(tagNode._rawText))
+      tagNode.children.forEach(flat)
+
+    } else {
+      children.push(child)
+    }
+  }
+
+  node.children.forEach(flat)
+  node.children = children
+}
+
+/**
+ * 将 Token 流构造成 AST
+ * @param tokenFlow
+ * @param parseConfig
+ */
+export function parse(tokenFlow: IToken[]): RootNode {
   const root = new RootNode()
-  const startTagStack: ParentNode[] = [root]
+  const startTagStack: TagNode[] = []
 
   let flowCur = 0
   let curNode: ParentNode = root
@@ -123,8 +132,8 @@ export function parse(tokenFlow: IToken[], parseConfig?: ParseConfig): RootNode 
       // 找到与结束标签相对应的开始标签
       let i = startTagStack.length - 1
       let match = false
-      for (; i > 0; i--) {
-        if (tagName === (startTagStack[i] as TagNode).tagName) {
+      for (; i >= 0; i--) {
+        if (tagName === startTagStack[i].tagName) {
           match = true
           break
         }
@@ -132,19 +141,18 @@ export function parse(tokenFlow: IToken[], parseConfig?: ParseConfig): RootNode 
 
       if (match) {
         if (i === startTagStack.length - 1) {
-          (startTagStack[i] as TagNode).close()
-          curNode = startTagStack[i-1]
+          close(startTagStack[i])
           startTagStack.pop()
 
         } else {
           // 有标签未正确关闭
-          (startTagStack[i] as TagNode).forceClose()
-          curNode = startTagStack[i-1]
+          close(startTagStack[i], true)
           startTagStack.splice(i, startTagStack.length)
         }
+        curNode = i === 0 ? root : startTagStack[i-1]
 
       } else {
-        // 没有找到对应的开始标签，结束标签退化为字符串
+        // 没有找到对应的开始标签，结束标签退化为文本标签
         curNode.children.push(new TextNode(token.rawText))
       }
     }
