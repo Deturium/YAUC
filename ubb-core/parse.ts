@@ -82,13 +82,13 @@ class TagNode implements INode {
       if (node.type === NodeType.Tag && (node as TagNode)._isClose === false) {
         const tagNode = node as TagNode
         children.push(new TextNode(tagNode._rawText))
-        flatNode(tagNode)
+        tagNode.children.forEach(flatNode)
       } else {
         children.push(node)
       }
     }
 
-    flatNode(this)
+    this.children.forEach(flatNode)
 
     this.children = children
     this._isClose = true
@@ -96,7 +96,7 @@ class TagNode implements INode {
 }
 
 
-export function parse(tokenFlow: IToken[], parseConfig: ParseConfig): RootNode {
+export function parse(tokenFlow: IToken[], parseConfig?: ParseConfig): RootNode {
   const root = new RootNode()
   const startTagStack: ParentNode[] = [root]
 
@@ -133,12 +133,13 @@ export function parse(tokenFlow: IToken[], parseConfig: ParseConfig): RootNode {
       if (match) {
         if (i === startTagStack.length - 1) {
           (startTagStack[i] as TagNode).close()
-          curNode = startTagStack.pop() as TagNode
+          curNode = startTagStack[i-1]
+          startTagStack.pop()
 
         } else {
           // 有标签未正确关闭
           (startTagStack[i] as TagNode).forceClose()
-          curNode = startTagStack[i]
+          curNode = startTagStack[i-1]
           startTagStack.splice(i, startTagStack.length)
         }
 
@@ -151,8 +152,3 @@ export function parse(tokenFlow: IToken[], parseConfig: ParseConfig): RootNode {
 
   return root
 }
-
-
-// aaa [b] bbbbbb [i] iiiii [/i] bb [/b] ccc
-
-// aaa [b] bbbbbb [i] bbbbb [/b] nn [/i] ccc
