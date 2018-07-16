@@ -1,4 +1,7 @@
-import { TokenType, IToken } from './lex'
+import {
+  TokenType, IToken,
+  lex,
+} from './lex'
 
 export const enum NodeType {
   /** 根节点 */
@@ -36,7 +39,7 @@ export class TagNode implements INode {
   children: ChildNode[] = []
 
   tagName!: string
-  tagData!: Object
+  tagData!: string[]
 
   _isClose: boolean = false
   _rawText: string
@@ -48,14 +51,24 @@ export class TagNode implements INode {
     this._parseTag(rawText)
   }
 
+  /**
+   * parse Tag in constructor
+   * @param rawText
+   */
   _parseTag(rawText: string) {
-    this.tagName = rawText.slice(1, -1)
-    // TODO: parse tagData
+    const str = rawText.slice(1, -1)
+    const indexOfEq = str.indexOf('=')
+
+    this.tagName = str.slice(0, indexOfEq)
+    this.tagData = str.slice(indexOfEq+1).split(',').map(s => s.trim())
   }
 
   get text(): string {
-    // TODO: text
-    return this._rawText
+    return [
+      this._rawText,
+      ...this.children.map(n => n.text),
+      `[/${this.tagName}]`,
+    ].join('')
   }
 }
 
@@ -104,18 +117,13 @@ function close(node: TagNode, recursive = false) {
  * @param tokenFlow
  * @param parseConfig
  */
-export function parse(tokenFlow: IToken[]): RootNode {
+export function parse(tokenIterator: IterableIterator<IToken>): RootNode {
   const root = new RootNode()
   const startTagStack: TagNode[] = []
 
-  let flowCur = 0
   let curNode: ParentNode = root
 
-  while (true) {
-    const token = tokenFlow[flowCur++]
-    if (!token)
-      break
-
+  for (let token of tokenIterator) {
     if (token.type === TokenType.Text) {
       curNode.children.push(new TextNode(token.rawText, curNode))
 
@@ -126,7 +134,8 @@ export function parse(tokenFlow: IToken[]): RootNode {
       startTagStack.push(tagNode)
 
     } else if (token.type === TokenType.EndTag) {
-      // FIXME: parse EndTag
+      // parse EndTag
+      //   e.g. [/b] --> b
       const tagName = token.rawText.slice(2, -1)
 
       // 找到与结束标签相对应的开始标签

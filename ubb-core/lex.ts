@@ -14,9 +14,11 @@ export interface IToken {
   rawText: string
 }
 
-export function lex(rawUBBText: string): IToken[] {
-  const retTokens: IToken[] = []
-
+/**
+ * 将 UBB 文本构造成流
+ * @param rawUBBText UBB 文本
+ */
+export function* lex(rawUBBText: string): IterableIterator<IToken> {
   const tagReg = /\[.+?]/gi
   let lastIndex = 0
 
@@ -26,35 +28,33 @@ export function lex(rawUBBText: string): IToken[] {
       break
 
     if (lastIndex !== tag.index) {
-      retTokens.push({
+      yield {
         type: TokenType.Text,
         rawText: rawUBBText.slice(lastIndex, tag.index)
-      })
+      }
     }
     lastIndex = tag.index + tag[0].length
 
     // EndTag
     if (tag[0][1] === '/') {
-      retTokens.push({
+      yield {
         type: TokenType.EndTag,
         rawText: tag[0]
-      })
+      }
 
     // StartTag
     } else {
-      retTokens.push({
+      yield {
         type: TokenType.StartTag,
         rawText: tag[0]
-      })
+      }
     }
   }
 
   if (lastIndex !== rawUBBText.length) {
-    retTokens.push({
+    yield {
       type: TokenType.Text,
       rawText: rawUBBText.slice(lastIndex)
-    })
+    }
   }
-
-  return retTokens
 }

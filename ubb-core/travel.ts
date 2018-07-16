@@ -40,7 +40,7 @@ function dfs(node: INode, visitor: IVisitor, content: IContent) {
 
     case NodeType.Tag:
       visitor.tagHandler.enter
-        && visitor.tagHandler.exit(node as TagNode, content)
+        && visitor.tagHandler.enter(node as TagNode, content)
 
       ;(node as TagNode).children.forEach(n => dfs(n, visitor, content))
 

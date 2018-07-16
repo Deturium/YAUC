@@ -20,7 +20,7 @@ const visitor: IVisitor = {
 
   tagHandler: {
     enter(node: TagNode, content: IContent) {
-      console.log(node.text, 'enter')
+      console.log(node.text, node.tagName, node.tagData)
     },
     exit(node: TagNode, content: IContent) {
       console.log(node.text, 'exit')
@@ -37,7 +37,7 @@ import {
 } from '../ubb-core'
 
 const ast = parse(
-  lex('aaa[b]bbb[c]ccc[/c]b[/b]ddd')
+  lex('aaa[b=1, red]bbb[c]ccc[/c]b[/b]ddd')
 )
 
 travel(ast, visitor, content)
