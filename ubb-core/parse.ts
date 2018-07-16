@@ -1,56 +1,42 @@
 import { TokenType, IToken } from './lex'
 
-const enum NodeType {
-  /**
-   * 根节点
-   */
+export const enum NodeType {
+  /** 根节点 */
   Root,
-  /**
-   * 文本节点
-   */
+  /** 文本节点 */
   Text,
-  /**
-   * 标签节点
-   */
+  /** 标签节点 */
   Tag,
 }
 
-interface INode {
+export interface INode {
   type: NodeType
 }
 
-/**
- * 可以当做一个节点的父节点
- */
-type ParentNode = RootNode | TagNode
-
-/**
- * 可以当做一个节点的子节点
- */
-type ChildNode = TextNode | TagNode
-
-
-class RootNode implements INode {
+export class RootNode implements INode {
   type: NodeType = NodeType.Root
   children: ChildNode[] = []
 }
 
-class TextNode implements INode {
+export class TextNode implements INode {
   type: NodeType = NodeType.Text
-  text: string
+  parent: ParentNode
 
-  constructor(rawText: string) {
+  readonly text: string
+
+  constructor(rawText: string, parent: ParentNode) {
     this.text = rawText
+    this.parent = parent
   }
 }
 
-class TagNode implements INode {
+export class TagNode implements INode {
   type: NodeType = NodeType.Tag
-  tagName!: string
-  tagData!: Object
-
   parent: ParentNode
   children: ChildNode[] = []
+
+  tagName!: string
+  tagData!: Object
 
   _isClose: boolean = false
   _rawText: string
@@ -74,11 +60,22 @@ class TagNode implements INode {
 }
 
 /**
+ * 可以当做一个节点的父节点
+ */
+export type ParentNode = RootNode | TagNode
+
+/**
+ * 可以当做一个节点的子节点
+ */
+export type ChildNode = TextNode | TagNode
+
+
+/**
  * 关闭一个Tag节点
  * @param node
  * @param recursive 是否递归闭合子节点
  */
-function close(node: TagNode, recursive = false): void {
+function close(node: TagNode, recursive = false) {
   node._isClose = true
   if (!recursive)
     return
@@ -87,11 +84,13 @@ function close(node: TagNode, recursive = false): void {
 
   const flat = (child: ChildNode) => {
     if (child.type === NodeType.Tag && (child as TagNode)._isClose === false) {
-      const tagNode = child as TagNode
-      children.push(new TextNode(tagNode._rawText))
-      tagNode.children.forEach(flat)
+      const tagChild = child as TagNode
+      children.push(new TextNode(tagChild._rawText, node))
+      tagChild.children.forEach(flat)
 
     } else {
+      // 修改 parent 的指向
+      child.parent = node
       children.push(child)
     }
   }
@@ -118,7 +117,7 @@ export function parse(tokenFlow: IToken[]): RootNode {
       break
 
     if (token.type === TokenType.Text) {
-      curNode.children.push(new TextNode(token.rawText))
+      curNode.children.push(new TextNode(token.rawText, curNode))
 
     } else if (token.type === TokenType.StartTag) {
       const tagNode: TagNode = new TagNode(token.rawText, curNode)
@@ -127,6 +126,7 @@ export function parse(tokenFlow: IToken[]): RootNode {
       startTagStack.push(tagNode)
 
     } else if (token.type === TokenType.EndTag) {
+      // FIXME: parse EndTag
       const tagName = token.rawText.slice(2, -1)
 
       // 找到与结束标签相对应的开始标签
@@ -153,7 +153,7 @@ export function parse(tokenFlow: IToken[]): RootNode {
 
       } else {
         // 没有找到对应的开始标签，结束标签退化为文本标签
-        curNode.children.push(new TextNode(token.rawText))
+        curNode.children.push(new TextNode(token.rawText, curNode))
       }
     }
   }

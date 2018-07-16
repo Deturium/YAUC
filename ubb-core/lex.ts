@@ -1,26 +1,16 @@
 export const enum TokenType {
-  /**
-   * 纯文本
-   */
+  /** 纯文本 */
   Text,
-  /**
-   * 开始标签，[\w+]
-   */
+  /** 开始标签，[\w+] */
   StartTag,
-  /**
-   * 结束标签，[/\w+]
-   */
+  /** 结束标签，[/\w+] */
   EndTag,
 }
 
 export interface IToken {
-  /**
-   * Token 类型
-   */
+  /** Token 类型 */
   type: TokenType
-  /**
-   * Token 值
-   */
+  /** Token 值 */
   rawText: string
 }
 
