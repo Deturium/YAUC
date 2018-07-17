@@ -1,6 +1,5 @@
 import {
   TokenType, IToken,
-  lex,
 } from './lex'
 
 export const enum NodeType {
@@ -56,17 +55,24 @@ export class TagNode implements INode {
    * @param rawText
    */
   _parseTag(rawText: string) {
+    // [b] --> b
     const str = rawText.slice(1, -1)
     const indexOfEq = str.indexOf('=')
 
-    this.tagName = str.slice(0, indexOfEq)
-    this.tagData = str.slice(indexOfEq+1).split(',').map(s => s.trim())
+    if (indexOfEq === -1) {
+      this.tagName = str.toLowerCase()
+      this.tagData = []
+    } else {
+      // [border=1, red]
+      this.tagName = str.slice(0, indexOfEq).toLowerCase()
+      this.tagData = str.slice(indexOfEq+1).split(',').map(s => s.trim())
+    }
   }
 
   get text(): string {
     return [
       this._rawText,
-      ...this.children.map(n => n.text),
+      // ...this.children.map(n => n.text),
       `[/${this.tagName}]`,
     ].join('')
   }
@@ -98,7 +104,7 @@ function close(node: TagNode, recursive = false) {
   const flat = (child: ChildNode) => {
     if (child.type === NodeType.Tag && (child as TagNode)._isClose === false) {
       const tagChild = child as TagNode
-      children.push(new TextNode(tagChild._rawText, node))
+      children.push(new TagNode(tagChild._rawText, node))
       tagChild.children.forEach(flat)
 
     } else {
@@ -136,7 +142,7 @@ export function parse(tokenIterator: IterableIterator<IToken>): RootNode {
     } else if (token.type === TokenType.EndTag) {
       // parse EndTag
       //   e.g. [/b] --> b
-      const tagName = token.rawText.slice(2, -1)
+      const tagName = token.rawText.slice(2, -1).toLowerCase()
 
       // 找到与结束标签相对应的开始标签
       let i = startTagStack.length - 1
