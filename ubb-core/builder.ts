@@ -7,44 +7,65 @@ import {
  * 自定义上下文，在 DFS 时共享
  */
 export interface IContent {
-  [propName: string]: any
+  [key: string]: any
 }
 
+
+export type IRootHandler = {
+  enter: (node: RootNode, content: IContent) => void
+  exit: (node: RootNode, content: IContent) => void
+  render: (node: RootNode, content: IContent, children: any[]) => any
+}
+
+export type ITagHandler = {
+  isRecursive: true
+  enter?: (node: TagNode, content: IContent) => void
+  exit?: (node: TagNode, content: IContent) => void
+  render: (node: TagNode, content: IContent, children: any[]) => any
+} | {
+  isRecursive: false
+  enter?: (node: TagNode, content: IContent) => void
+  exit?: (node: TagNode, content: IContent) => void
+  render: (node: TagNode, content: IContent) => any
+}
+
+export type IGeneralTagHandler = {
+  match: RegExp
+  enter?: (node: TagNode, content: IContent) => void
+  exit?: (node: TagNode, content: IContent) => void
+  render: (node: TagNode, content: IContent) => any
+}
+
+export type IDefaultTagHandler = {
+  render: (node: TagNode, content: IContent, children: any[]) => any
+}
+
+
+export type ITextHandler = ((text: string, content: IContent) => any)[]
+
+
 export interface IHandlerHub {
-  rootHandler: {
-    enter: (node: RootNode, content: IContent) => void
-    exit: (node: RootNode, content: IContent) => void
-    render: (node: RootNode, content: IContent, children: any[]) => any
+  rootHandler: IRootHandler
+
+  tagHandlers: {
+    [key: string]: ITagHandler
   }
 
-  tagHandler: {
-    [propName: string]: {
-      isRecursive: true
-      enter?: (node: TagNode, content: IContent) => void
-      exit?: (node: TagNode, content: IContent) => void
-      render: (node: TagNode, content: IContent, children: any[]) => any
-    } | {
-      isRecursive: false
-      enter?: (node: TagNode, content: IContent) => void
-      exit?: (node: TagNode, content: IContent) => void
-      render: (node: TagNode, content: IContent) => any
-    }
-  }
+  generalTagHandlers: IGeneralTagHandler[]
 
-  defaultTagHandler: {
-    render: (node: TagNode, content: IContent, children: any[]) => any
-  }
+  defaultTagHandler: IDefaultTagHandler
 
-  textHandler: ((text: string, content: IContent) => any)[]
+  textHandler: ITextHandler
 }
 
 function dfs(node: INode, handlerHub: IHandlerHub, content: IContent): any {
   switch (node.type) {
     case NodeType.Root:
+      const rootNode = node as RootNode
       handlerHub.rootHandler.enter(node as RootNode, content)
-      const children = (node as TagNode).children.map(child => dfs(child, handlerHub, content))
-      const root = handlerHub.rootHandler.render(node as RootNode, content, children)
-      handlerHub.rootHandler.exit(node as RootNode, content)
+      const children = rootNode.children.map(child => dfs(child, handlerHub, content))
+      const root = handlerHub.rootHandler.render(rootNode, content, children)
+      handlerHub.rootHandler.exit(rootNode, content)
       return root
 
     case NodeType.Text:
@@ -56,25 +77,29 @@ function dfs(node: INode, handlerHub: IHandlerHub, content: IContent): any {
       return str
 
     case NodeType.Tag:
-      const tagName = (node as TagNode).tagName
+      const tagNode = node as TagNode
+      const tagName = tagNode.tagName
       let ret: any
 
-      if (handlerHub.tagHandler[tagName]) {
-        const handler = handlerHub.tagHandler[tagName]
-        handler.enter && handler.enter(node as TagNode, content)
+      if (handlerHub.tagHandlers[tagName]) {
+        const handler = handlerHub.tagHandlers[tagName]
+        handler.enter && handler.enter(tagNode, content)
 
         if (handler.isRecursive) {
-          const children = (node as TagNode).children.map(child => dfs(child, handlerHub, content))
-          ret = handler.render(node as TagNode, content, children)
+          const children = tagNode.children.map(child => dfs(child, handlerHub, content))
+          ret = handler.render(tagNode, content, children)
         } else {
-          ret = handler.render(node as TagNode, content)
+          ret = handler.render(tagNode, content)
         }
 
-        handler.exit && handler.exit(node as TagNode, content)
+        handler.exit && handler.exit(tagNode, content)
 
       } else {
-        const children = (node as TagNode).children.map(child => dfs(child, handlerHub, content))
-        ret = handlerHub.defaultTagHandler.render(node as TagNode, content, children)
+
+        // TODO: generalTagHandlers
+
+        const children = tagNode.children.map(child => dfs(child, handlerHub, content))
+        ret = handlerHub.defaultTagHandler.render(tagNode, content, children)
       }
       return ret
   }

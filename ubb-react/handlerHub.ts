@@ -16,7 +16,7 @@ export const handlerHub: IHandlerHub = {
     },
   },
 
-  tagHandler: {
+  tagHandlers: {
     'b': {
       isRecursive: true,
       enter() {
@@ -30,6 +30,10 @@ export const handlerHub: IHandlerHub = {
       },
     }
   },
+
+  generalTagHandlers: [
+
+  ],
 
   defaultTagHandler: {
     render(node: TagNode, content: IContent, children: any[]) {
