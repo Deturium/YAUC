@@ -1,47 +1,21 @@
 import {
-  TagNode, RootNode,
-  IContent, IHandlerHub,
+  IHandlerHub,
 } from '../ubb-core'
 
-export const handlerHub: IHandlerHub = {
-  rootHandler: {
-    enter() {
-      console.log('RS')
-    },
-    exit() {
-      console.log('RE')
-    },
-    render(node: RootNode, content: IContent, children: any[]) {
-      return `[ROOT]${children.join('')}[/ROOT]`
-    },
-  },
+import rootHandler from './rootHandler'
+import tagHandlers from './tagHandlers'
+import defaultTagHandler from './defaultTagHandler'
+import generalTagHandlers from './generalTagHandlers'
+import textHandler from './textHandler'
 
-  tagHandlers: {
-    'b': {
-      isRecursive: true,
-      enter() {
-        console.log('BS')
-      },
-      exit() {
-        console.log('BE')
-      },
-      render(node: RootNode, content: IContent, children: any[]) {
-        return `[B]${children.join('')}[/B]`
-      },
-    }
-  },
+export const handlerHub: IHandlerHub<string> = {
+  rootHandler,
 
-  generalTagHandlers: [
+  tagHandlers,
 
-  ],
+  generalTagHandlers,
 
-  defaultTagHandler: {
-    render(node: TagNode, content: IContent, children: any[]) {
-      return `[?]${children.join('')}[/?]`
-    },
-  },
+  defaultTagHandler,
 
-  textHandler: [
-    (text: string, content: IContent) => text
-  ]
+  textHandler,
 }

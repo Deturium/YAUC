@@ -69,13 +69,13 @@ export class TagNode implements INode {
     }
   }
 
-  get text(): string {
-    return [
-      this._rawText,
-      // ...this.children.map(n => n.text),
-      `[/${this.tagName}]`,
-    ].join('')
-  }
+  // get text(): string {
+  //   return [
+  //     this._rawText,
+  //     // ...this.children.map(n => n.text),
+  //     `[/${this.tagName}]`,
+  //   ].join('')
+  // }
 }
 
 /**

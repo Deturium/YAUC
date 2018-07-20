@@ -5,7 +5,7 @@ import {
 import { handlerHub } from './handlerHub'
 
 const ast = parse(
-  lex('aaa[b]bbb[c]ccc[d]b[/b]ddd')
+  lex('aaa[b]bbb[c]cc [ac01] c[d]b[/b]ddd')
 )
 
 const ret = builder(ast, handlerHub, {

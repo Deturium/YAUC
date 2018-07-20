@@ -1,5 +1,5 @@
 import {
-  NodeType, INode,
+  NodeType, ChildNode,
   RootNode, TextNode, TagNode,
 } from './parse'
 
@@ -11,98 +11,123 @@ export interface IContent {
 }
 
 
-export type IRootHandler = {
+export type IRootHandler<T> = {
   enter: (node: RootNode, content: IContent) => void
   exit: (node: RootNode, content: IContent) => void
-  render: (node: RootNode, content: IContent, children: any[]) => any
+  render: (node: RootNode, content: IContent, children: (T | string)[]) => T
 }
 
-export type ITagHandler = {
+export type ITagHandler<T> = {
   isRecursive: true
   enter?: (node: TagNode, content: IContent) => void
   exit?: (node: TagNode, content: IContent) => void
-  render: (node: TagNode, content: IContent, children: any[]) => any
+  render: (node: TagNode, content: IContent, children: (T | string)[]) => T
 } | {
   isRecursive: false
   enter?: (node: TagNode, content: IContent) => void
   exit?: (node: TagNode, content: IContent) => void
-  render: (node: TagNode, content: IContent) => any
+  render: (node: TagNode, content: IContent) => T
 }
 
-export type IGeneralTagHandler = {
+export type IGeneralTagHandler<T> = {
+  isRecursive: true
   match: RegExp
   enter?: (node: TagNode, content: IContent) => void
   exit?: (node: TagNode, content: IContent) => void
-  render: (node: TagNode, content: IContent) => any
+  render: (node: TagNode, content: IContent, children: (T | string)[]) => T
+} | {
+  isRecursive: false
+  match: RegExp
+  enter?: (node: TagNode, content: IContent) => void
+  exit?: (node: TagNode, content: IContent) => void
+  render: (node: TagNode, content: IContent) => T
 }
 
-export type IDefaultTagHandler = {
-  render: (node: TagNode, content: IContent, children: any[]) => any
+export type ITextHandler<T> = {
+  render: (node: TextNode, content: IContent) => (T | string)
 }
 
 
-export type ITextHandler = ((text: string, content: IContent) => any)[]
-
-
-export interface IHandlerHub {
-  rootHandler: IRootHandler
+export interface IHandlerHub<T> {
+  rootHandler: IRootHandler<T>
 
   tagHandlers: {
-    [key: string]: ITagHandler
+    [key: string]: ITagHandler<T>
   }
 
-  generalTagHandlers: IGeneralTagHandler[]
+  generalTagHandlers: IGeneralTagHandler<T>[]
 
-  defaultTagHandler: IDefaultTagHandler
+  defaultTagHandler: ITagHandler<T>
 
-  textHandler: ITextHandler
+  textHandler: ITextHandler<T>
 }
 
-function dfs(node: INode, handlerHub: IHandlerHub, content: IContent): any {
-  switch (node.type) {
-    case NodeType.Root:
-      const rootNode = node as RootNode
-      handlerHub.rootHandler.enter(node as RootNode, content)
-      const children = rootNode.children.map(child => dfs(child, handlerHub, content))
-      const root = handlerHub.rootHandler.render(rootNode, content, children)
-      handlerHub.rootHandler.exit(rootNode, content)
-      return root
+/**
+ * DFS 处理一个节点（不能是根节点）
+ * @param node 处理节点
+ * @param handlerHub 处理函数
+ * @param content 上下文
+ */
+export function handlerNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, content: IContent): T | string {
+  if (node.type === NodeType.Tag) {
+    // HANDLE TAG_NODE
+    const tagNode = node as TagNode
+    const tagName = tagNode.tagName
+    let tagHandler!: ITagHandler<T>
 
-    case NodeType.Text:
-      let str = (node as TextNode).text
-      const len = handlerHub.textHandler.length
-      for (let i = 0; i < len; i++) {
-        str = handlerHub.textHandler[i](str, content)
-      }
-      return str
+    if (handlerHub.tagHandlers[tagName]) {
+      tagHandler = handlerHub.tagHandlers[tagName]
 
-    case NodeType.Tag:
-      const tagNode = node as TagNode
-      const tagName = tagNode.tagName
-      let ret: any
+    } else {
+      // 如果具名没有则查找通配 Handler
+      let match = false
 
-      if (handlerHub.tagHandlers[tagName]) {
-        const handler = handlerHub.tagHandlers[tagName]
-        handler.enter && handler.enter(tagNode, content)
-
-        if (handler.isRecursive) {
-          const children = tagNode.children.map(child => dfs(child, handlerHub, content))
-          ret = handler.render(tagNode, content, children)
-        } else {
-          ret = handler.render(tagNode, content)
+      for (let generalTagHandler of handlerHub.generalTagHandlers) {
+        if (generalTagHandler.match.test(tagName)) {
+          tagHandler = generalTagHandler
+          match = true
+          break
         }
-
-        handler.exit && handler.exit(tagNode, content)
-
-      } else {
-
-        // TODO: generalTagHandlers
-
-        const children = tagNode.children.map(child => dfs(child, handlerHub, content))
-        ret = handlerHub.defaultTagHandler.render(tagNode, content, children)
       }
-      return ret
+
+      if (!match) {
+        // 如果都不匹配则使用默认 Handler
+        tagHandler = handlerHub.defaultTagHandler
+      }
+    }
+
+    let ret: T
+    // enter the node
+    tagHandler.enter && tagHandler.enter(tagNode, content)
+
+    if (tagHandler.isRecursive) {
+      const children = tagNode.children.map(child => handlerNode<T>(child, handlerHub, content))
+      ret = tagHandler.render(tagNode, content, children)
+    } else {
+      ret = tagHandler.render(tagNode, content)
+    }
+
+    // exit the node
+    tagHandler.exit && tagHandler.exit(tagNode, content)
+
+    return ret
+
+  } else {
+    // HANDLE TEXT_NODE
+    return handlerHub.textHandler.render(node as TextNode, content)
   }
+}
+
+function rootDfs<T>(root: RootNode, handlerHub: IHandlerHub<T>, content: IContent):T {
+  // 初始化上下文工作
+  handlerHub.rootHandler.enter(root, content)
+
+  const children = root.children.map(child => handlerNode<T>(child, handlerHub, content))
+  const output = handlerHub.rootHandler.render(root, content, children)
+
+  // 清理和收尾
+  handlerHub.rootHandler.exit(root, content)
+  return output
 }
 
 /**
@@ -110,6 +135,6 @@ function dfs(node: INode, handlerHub: IHandlerHub, content: IContent): any {
  * @param root AST 根节点
  * @param handlerHub
  */
-export function builder(root: RootNode, handlerHub: IHandlerHub, initContent: IContent): any {
-  return dfs(root, handlerHub, initContent)
+export function builder<T>(root: RootNode, handlerHub: IHandlerHub<T>, initContent: IContent): T {
+  return rootDfs<T>(root, handlerHub, initContent)
 }
