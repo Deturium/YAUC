@@ -1,7 +1,7 @@
 import {
   IGeneralTagHandler,
   TagNode, IContent,
-} from '../../ubb-core'
+} from '../../../ubb-core'
 
 const handler: IGeneralTagHandler<string> = {
   isRecursive: true,

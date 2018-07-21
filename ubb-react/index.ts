@@ -1,15 +1,12 @@
-import {
-  lex, parse, builder,
-} from '../ubb-core'
+import UBB from '../ubb-core'
 
-import { handlerHub } from './handlerHub'
+import handlerHub from './handlerHub'
+import content from './content'
 
-const ast = parse(
-  lex('aaa[b]bbb[c]cc [ac01] c[d]b[/b]ddd')
+const ret = UBB(
+  'aaa[b]bbb[c]cc [ac01] c[d]b[/b]ddd',
+  handlerHub,
+  content
 )
-
-const ret = builder(ast, handlerHub, {
-  cnt: 1
-})
 
 console.log(ret)

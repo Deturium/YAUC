@@ -14,14 +14,15 @@ export interface IContent {
 export type IRootHandler<T> = {
   enter: (node: RootNode, content: IContent) => void
   exit: (node: RootNode, content: IContent) => void
-  render: (node: RootNode, content: IContent, children: (T | string)[]) => T
+  render: (node: RootNode, content: IContent, children: T[]) => T
 }
 
 export type ITagHandler<T> = {
+  /** 是否递归处理子标签 */
   isRecursive: true
   enter?: (node: TagNode, content: IContent) => void
   exit?: (node: TagNode, content: IContent) => void
-  render: (node: TagNode, content: IContent, children: (T | string)[]) => T
+  render: (node: TagNode, content: IContent, children: T[]) => T
 } | {
   isRecursive: false
   enter?: (node: TagNode, content: IContent) => void
@@ -31,10 +32,11 @@ export type ITagHandler<T> = {
 
 export type IGeneralTagHandler<T> = {
   isRecursive: true
+  /** 匹配标签的正则 */
   match: RegExp
   enter?: (node: TagNode, content: IContent) => void
   exit?: (node: TagNode, content: IContent) => void
-  render: (node: TagNode, content: IContent, children: (T | string)[]) => T
+  render: (node: TagNode, content: IContent, children: T[]) => T
 } | {
   isRecursive: false
   match: RegExp
@@ -44,21 +46,27 @@ export type IGeneralTagHandler<T> = {
 }
 
 export type ITextHandler<T> = {
-  render: (node: TextNode, content: IContent) => (T | string)
+  render: (node: TextNode, content: IContent) => T
 }
 
-
+/**
+ * 所有节点 Handler 的集合
+ */
 export interface IHandlerHub<T> {
+  /** 根节点 Handler */
   rootHandler: IRootHandler<T>
 
+  /** 具名tag节点 Handler */
   tagHandlers: {
     [key: string]: ITagHandler<T>
   }
-
+  /** 通配tag节点 Handler */
   generalTagHandlers: IGeneralTagHandler<T>[]
 
+  /** 默认 TagHandler */
   defaultTagHandler: ITagHandler<T>
 
+  /** 文本节点 Handler */
   textHandler: ITextHandler<T>
 }
 
@@ -68,7 +76,7 @@ export interface IHandlerHub<T> {
  * @param handlerHub 处理函数
  * @param content 上下文
  */
-export function handlerNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, content: IContent): T | string {
+export function handlerNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, content: IContent): T {
   if (node.type === NodeType.Tag) {
     // HANDLE TAG_NODE
     const tagNode = node as TagNode
@@ -134,7 +142,8 @@ function rootDfs<T>(root: RootNode, handlerHub: IHandlerHub<T>, content: IConten
  * DFS 构造目标输出
  * @param root AST 根节点
  * @param handlerHub
+ * @param initContent
  */
-export function builder<T>(root: RootNode, handlerHub: IHandlerHub<T>, initContent: IContent): T {
+export function build<T>(root: RootNode, handlerHub: IHandlerHub<T>, initContent: IContent): T {
   return rootDfs<T>(root, handlerHub, initContent)
 }
