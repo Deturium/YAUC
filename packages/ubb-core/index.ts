@@ -1,12 +1,12 @@
-export * from './lex'
+export * from './src/lex'
 
-export * from './parse'
+export * from './src/parse'
 
-export * from './build'
+export * from './src/build'
 
-import { lex } from './lex'
-import { parse } from './parse'
-import { build, IHandlerHub, IContent } from './build'
+import { lex } from './src/lex'
+import { parse } from './src/parse'
+import { build, IHandlerHub, IContent } from './src/build'
 
 /**
  * 构造 UBB 文本为 T
@@ -15,7 +15,7 @@ import { build, IHandlerHub, IContent } from './build'
  * @param initContent 初始化上下文（配置项）
  */
 export default function UBB<T>(UBBText: string, handlerHub: IHandlerHub<T>, initContent: IContent): T {
-  return build(
+  return build<T>(
     parse(lex(UBBText)),
     handlerHub,
     initContent

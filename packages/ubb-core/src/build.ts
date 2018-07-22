@@ -20,8 +20,11 @@ export type IRootHandler<T> = {
 export type ITagHandler<T> = {
   /** 是否递归处理子标签 */
   isRecursive: true
+  /** 进入节点时触发 */
   enter?: (node: TagNode, content: IContent) => void
+  /** 离开节点时触发 */
   exit?: (node: TagNode, content: IContent) => void
+  /** 渲染该节点，返回渲染结果 */
   render: (node: TagNode, content: IContent, children: T[]) => T
 } | {
   isRecursive: false
@@ -57,10 +60,10 @@ export interface IHandlerHub<T> {
   rootHandler: IRootHandler<T>
 
   /** 具名tag节点 Handler */
-  tagHandlers: {
+  specificTagHandlers: {
     [key: string]: ITagHandler<T>
   }
-  /** 通配tag节点 Handler */
+  /** 通配tag节点 Handler（HINT: 注意处理顺序） */
   generalTagHandlers: IGeneralTagHandler<T>[]
 
   /** 默认 TagHandler */
@@ -83,8 +86,8 @@ export function handlerNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, cont
     const tagName = tagNode.tagName
     let tagHandler!: ITagHandler<T>
 
-    if (handlerHub.tagHandlers[tagName]) {
-      tagHandler = handlerHub.tagHandlers[tagName]
+    if (handlerHub.specificTagHandlers[tagName]) {
+      tagHandler = handlerHub.specificTagHandlers[tagName]
 
     } else {
       // 如果具名没有则查找通配 Handler

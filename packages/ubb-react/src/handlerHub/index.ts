@@ -1,17 +1,17 @@
 import {
   IHandlerHub,
-} from '../../ubb-core'
+} from 'ubb-core'
 
 import rootHandler from './rootHandler'
-import tagHandlers from './tagHandlers'
-import defaultTagHandler from './defaultTagHandler'
+import specificTagHandlers from './specificTagHandlers'
 import generalTagHandlers from './generalTagHandlers'
+import defaultTagHandler from './defaultTagHandler'
 import textHandler from './textHandler'
 
 const handlerHub: IHandlerHub<string> = {
   rootHandler,
 
-  tagHandlers,
+  specificTagHandlers,
 
   generalTagHandlers,
 

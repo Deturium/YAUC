@@ -1,0 +1,8 @@
+{
+  "name": "ubb-react",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "dependencies": {
+    "ubb-core": "^1.0.0"
+  }
+}

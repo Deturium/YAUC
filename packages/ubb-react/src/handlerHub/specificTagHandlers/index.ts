@@ -1,10 +1,10 @@
 import {
   IHandlerHub,
-} from '../../../ubb-core'
+} from 'ubb-core'
 
 import b from './b'
 
-const tagHandlers: IHandlerHub<string>["tagHandlers"] = {
+const tagHandlers: IHandlerHub<string>["specificTagHandlers"] = {
 
   'b': b,
 

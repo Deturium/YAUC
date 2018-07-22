@@ -1,13 +1,15 @@
 import {
-  ITagHandler,
+  IGeneralTagHandler,
   TagNode, IContent,
-} from '../../ubb-core'
+} from 'ubb-core'
 
-const handler: ITagHandler<string> = {
+const handler: IGeneralTagHandler<string> = {
   isRecursive: true,
 
+  match: /ac/,
+
   render(node: TagNode, content: IContent, children: any[]) {
-    return `[?]${children.join('')}[/?]`
+    return ` [acTag] `
   },
 }
 

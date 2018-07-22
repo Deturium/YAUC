@@ -1,7 +1,7 @@
 import {
   ITextHandler,
   TextNode, IContent,
-} from '../../ubb-core'
+} from 'ubb-core'
 
 const handler: ITextHandler<string> = {
   render(node: TextNode, content: IContent) {

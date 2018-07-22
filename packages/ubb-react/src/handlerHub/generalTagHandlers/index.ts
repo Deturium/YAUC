@@ -1,6 +1,6 @@
 import {
   IHandlerHub,
-} from '../../../ubb-core'
+} from 'ubb-core'
 
 import ac from './ac'
 

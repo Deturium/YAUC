@@ -1,7 +1,7 @@
 import {
   IRootHandler,
   RootNode, IContent,
-} from '../../ubb-core'
+} from 'ubb-core'
 
 const handler: IRootHandler<string> = {
   enter(node: RootNode, content: IContent) {
