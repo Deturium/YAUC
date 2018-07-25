@@ -18,6 +18,8 @@ export interface INode {
 export class RootNode implements INode {
   type: NodeType = NodeType.Root
   children: ChildNode[] = []
+
+  _isClose: boolean = false
 }
 
 export class TextNode implements INode {
@@ -94,7 +96,7 @@ export type ChildNode = TextNode | TagNode
  * @param node
  * @param recursive 是否递归闭合子节点
  */
-function close(node: TagNode, recursive = false) {
+function close(node: ParentNode, recursive = false) {
   node._isClose = true
   if (!recursive)
     return
@@ -172,6 +174,8 @@ export function parse(tokenIterator: IterableIterator<IToken>): RootNode {
       }
     }
   }
+
+  close(root, true)
 
   return root
 }

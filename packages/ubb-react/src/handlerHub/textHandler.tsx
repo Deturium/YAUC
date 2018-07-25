@@ -3,12 +3,12 @@ import {
   TextNode, IContent,
 } from 'ubb-core'
 
-const handler: ITextHandler<string> = {
+import * as  React from 'react'
+
+const handler: ITextHandler<React.ReactNode> = {
   render(node: TextNode, content: IContent) {
-    return `${node.text}`
+    return node.text
   },
 }
 
 export default handler
-
-

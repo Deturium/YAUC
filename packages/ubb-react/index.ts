@@ -1,12 +1,9 @@
 import UBB from 'ubb-core'
+import * as  React from 'react'
 
 import handlerHub from './src/handlerHub'
 import content from './src/content'
 
-const ret = UBB(
-  'aaa[b]bbb[c]cc [ac01] c[d]b[/b]ddd',
-  handlerHub,
-  content
-)
-
-console.log(ret)
+export default function UBBReact(ubbText: string) {
+  return UBB<React.ReactNode>(ubbText, handlerHub, content)
+}

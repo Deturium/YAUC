@@ -8,7 +8,9 @@ import generalTagHandlers from './generalTagHandlers'
 import defaultTagHandler from './defaultTagHandler'
 import textHandler from './textHandler'
 
-const handlerHub: IHandlerHub<string> = {
+import * as  React from 'react'
+
+const handlerHub: IHandlerHub<React.ReactNode> = {
   rootHandler,
 
   specificTagHandlers,

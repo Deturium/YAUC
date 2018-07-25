@@ -86,7 +86,7 @@ export function handlerNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, cont
     const tagName = tagNode.tagName
     let tagHandler!: ITagHandler<T>
 
-    if (handlerHub.specificTagHandlers[tagName]) {
+    if (tagNode._isClose && handlerHub.specificTagHandlers[tagName]) {
       tagHandler = handlerHub.specificTagHandlers[tagName]
 
     } else {
