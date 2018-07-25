@@ -6,6 +6,7 @@ import {
 import * as React from 'react'
 
 const handler: IRootHandler<React.ReactNode> = {
+
   enter(node: RootNode, content: IContent) {
 
   },
@@ -18,7 +19,9 @@ const handler: IRootHandler<React.ReactNode> = {
     return (
       <div style={{
         padding: '15px 20px',
-        border: "2px solid #66ccff"
+        border: "2px solid #66ccff",
+        whiteSpace: "pre-wrap",
+        wordBreak: "break-all",
       }}>
         { children }
       </div>

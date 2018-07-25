@@ -10,7 +10,7 @@ export default {
 
   typescript: true,
 
-  propsParser: true,
+  propsParser: false,
 
   // plugins: [
   //

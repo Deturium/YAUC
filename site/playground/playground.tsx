@@ -1,11 +1,11 @@
-import React, { ChangeEvent } from 'react'
+import * as React from 'react'
 import styled from 'styled-components'
 
 import UBBReact from 'ubb-react'
 
 const TextareaStyled = styled.textarea`
   width: 100%;
-  height: 100px;
+  height: 160px;
   margin-bottom: 20px;
   padding: 15px 20px;
 
@@ -23,7 +23,7 @@ export default class UBBPlayground extends React.Component<{}, State>{
     text: ''
   }
 
-  inputHandle(event: ChangeEvent<HTMLTextAreaElement>) {
+  inputHandle(event: React.ChangeEvent<HTMLTextAreaElement>) {
     this.setState({
       text: event.target.value
     })
