@@ -1,5 +1,9 @@
 {
   "name": "ubb-core",
   "version": "1.0.0",
-  "main": "dist/index.js"
+  "main": "dist/index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "clean": "rm -rf dist"
+  }
 }

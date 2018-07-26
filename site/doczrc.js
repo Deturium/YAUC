@@ -4,7 +4,7 @@ export default {
   title: 'CC98 UBB',
   description: 'CC98 开发组文档站',
 
-  src: 'site',
+  src: 'src',
 
   // dest: '.docz/dist',
 

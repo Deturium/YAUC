@@ -9,6 +9,6 @@ package-lock.json
 
 lerna-debug.log
 
-dist
+dist/
 
 .docz
