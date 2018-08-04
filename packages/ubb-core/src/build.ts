@@ -11,46 +11,47 @@ export interface IContent {
 }
 
 
-export type IRootHandler<T> = {
-  enter: (node: RootNode, content: IContent) => void
-  exit: (node: RootNode, content: IContent) => void
-  render: (node: RootNode, content: IContent, children: T[]) => T
-}
-
-export type ITagHandler<T> = {
+interface RecursiveTagHandler<T> {
   /** 是否递归处理子标签 */
   isRecursive: true
   /** 进入节点时触发 */
-  enter?: (node: TagNode, content: IContent) => void
+  enter?(node: TagNode, content: IContent): void
   /** 离开节点时触发 */
-  exit?: (node: TagNode, content: IContent) => void
+  exit?(node: TagNode, content: IContent): void
   /** 渲染该节点，返回渲染结果 */
-  render: (node: TagNode, content: IContent, children: T[]) => T
-} | {
-  isRecursive: false
-  enter?: (node: TagNode, content: IContent) => void
-  exit?: (node: TagNode, content: IContent) => void
-  render: (node: TagNode, content: IContent) => T
+  render(node: TagNode, content: IContent, children: T[]): T
 }
 
-export type IGeneralTagHandler<T> = {
-  isRecursive: true
+interface NotRecursiveTagHandler<T> {
+  isRecursive: false
+  enter?(node: TagNode, content: IContent): void
+  exit?(node: TagNode, content: IContent): void
+  render(node: TagNode, content: IContent): T
+}
+
+interface RecursiveGeneralTagHandler<T> extends RecursiveTagHandler<T> {
   /** 匹配标签的正则 */
   match: RegExp
-  enter?: (node: TagNode, content: IContent) => void
-  exit?: (node: TagNode, content: IContent) => void
-  render: (node: TagNode, content: IContent, children: T[]) => T
-} | {
-  isRecursive: false
-  match: RegExp
-  enter?: (node: TagNode, content: IContent) => void
-  exit?: (node: TagNode, content: IContent) => void
-  render: (node: TagNode, content: IContent) => T
 }
+
+interface NotRecursiveGeneralTagHandler<T> extends NotRecursiveTagHandler<T> {
+  match: RegExp
+}
+
+export type IRootHandler<T> = {
+  enter(node: RootNode, content: IContent): void
+  exit(node: RootNode, content: IContent): void
+  render(node: RootNode, content: IContent, children: T[]): T
+}
+
+export type ITagHandler<T> = RecursiveTagHandler<T> | NotRecursiveTagHandler<T>
+
+export type IGeneralTagHandler<T> = RecursiveGeneralTagHandler<T> | NotRecursiveGeneralTagHandler<T>
 
 export type ITextHandler<T> = {
   render: (node: TextNode, content: IContent) => T
 }
+
 
 /**
  * 所有节点 Handler 的集合
@@ -59,11 +60,11 @@ export interface IHandlerHub<T> {
   /** 根节点 Handler */
   rootHandler: IRootHandler<T>
 
-  /** 具名tag节点 Handler */
+  /** 具名 tag 节点 Handler */
   specificTagHandlers: {
     [key: string]: ITagHandler<T>
   }
-  /** 通配tag节点 Handler（HINT: 注意处理顺序） */
+  /** 通配 tag 节点 Handler（HINT: 注意处理顺序） */
   generalTagHandlers: IGeneralTagHandler<T>[]
 
   /** 默认 TagHandler */
