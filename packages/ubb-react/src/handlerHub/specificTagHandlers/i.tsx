@@ -3,7 +3,7 @@ import {
   TagNode, IContent,
 } from 'ubb-core'
 
-import * as React from 'react'
+import React from 'react'
 
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,

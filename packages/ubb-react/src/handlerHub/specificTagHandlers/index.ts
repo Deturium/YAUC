@@ -2,7 +2,7 @@ import {
   IHandlerHub,
 } from 'ubb-core'
 
-import * as  React from 'react'
+import React from 'react'
 
 import b from './b'
 import i from './i'

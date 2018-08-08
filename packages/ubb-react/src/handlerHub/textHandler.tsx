@@ -3,7 +3,7 @@ import {
   TextNode, IContent,
 } from 'ubb-core'
 
-import * as  React from 'react'
+import React from 'react'
 
 const handler: ITextHandler<React.ReactNode> = {
   render(node: TextNode, content: IContent) {

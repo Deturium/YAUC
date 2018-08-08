@@ -1,5 +1,5 @@
 import UBB from 'ubb-core'
-import * as  React from 'react'
+import React from 'react'
 
 import handlerHub from './src/handlerHub'
 import content from './src/content'

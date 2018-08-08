@@ -2,7 +2,7 @@ import {
   IHandlerHub,
 } from 'ubb-core'
 
-import * as  React from 'react'
+import React from 'react'
 
 import rootHandler from './rootHandler'
 import specificTagHandlers from './specificTagHandlers'

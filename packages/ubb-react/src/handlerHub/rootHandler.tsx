@@ -3,7 +3,7 @@ import {
   RootNode, IContent,
 } from 'ubb-core'
 
-import * as React from 'react'
+import React from 'react'
 
 const handler: IRootHandler<React.ReactNode> = {
 
