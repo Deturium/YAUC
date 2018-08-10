@@ -1,15 +1,20 @@
 ---
-name: ubb-playground
-route: /ubb-playground
+name: playground
+route: /playground
+order: 10
 ---
 
-import { Playground } from 'docz'
-import UBBPlayground from './playground.tsx'
+import UBBPlayground from '../components/UBBPlayground.tsx'
 
 # Playground
 
-<Playground>
-  {() => {
-    return <UBBPlayground />
-  }}
-</Playground>
+
+## Introduction
+
+这里是 YAUC 的交互场，你可以尝试输入任意 UBB CODE 来查看渲染结果
+
+
+## UBBPlayground
+
+<UBBPlayground />
+

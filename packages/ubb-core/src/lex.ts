@@ -58,3 +58,5 @@ export function* lex(rawUBBText: string): IterableIterator<IToken> {
     }
   }
 }
+
+// FIXME: 解析 "" '' 的转义

@@ -40,7 +40,9 @@ export class TagNode implements INode {
   children: ChildNode[] = []
 
   tagName!: string
-  tagData!: string[]
+  tagData!: {
+    [key: string]: string
+  }
 
   _isClose: boolean = false
   _rawText: string
@@ -59,16 +61,10 @@ export class TagNode implements INode {
   _parseTag(rawText: string) {
     // [b] --> b
     const str = rawText.slice(1, -1)
-    const indexOfEq = str.indexOf('=')
 
-    if (indexOfEq === -1) {
-      this.tagName = str.toLowerCase()
-      this.tagData = []
-    } else {
-      // [border=1, red]
-      this.tagName = str.slice(0, indexOfEq).toLowerCase()
-      this.tagData = str.slice(indexOfEq+1).split(',').map(s => s.trim())
-    }
+    // TODO:
+    this.tagName = str.toLowerCase()
+    this.tagData = {}
   }
 
   get text(): string {

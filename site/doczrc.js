@@ -1,8 +1,8 @@
 // doczrc.js
 
 export default {
-  title: 'CC98 UBB',
-  description: 'CC98 开发组文档站',
+  title: 'YAUC',
+  description: 'Yet Another UBB for CC98.',
 
   src: 'src',
 

@@ -18,8 +18,6 @@ const handler: IRootHandler<React.ReactNode> = {
   render(node: RootNode, content: IContent, children: React.ReactNode[]) {
     return (
       <div style={{
-        padding: '15px 20px',
-        border: "2px solid #66ccff",
         whiteSpace: "pre-wrap",
         wordBreak: "break-all",
       }}>

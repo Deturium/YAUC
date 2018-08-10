@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import UBBReact from 'ubb-react'
 
 const TextareaStyled = styled.textarea`
+  box-sizing: border-box;
   width: 100%;
-  height: 160px;
+  height: 200px;
   margin-bottom: 20px;
   padding: 15px 20px;
 
@@ -14,13 +15,22 @@ const TextareaStyled = styled.textarea`
   resize: none;
 `
 
-interface State {
+const UBBContainerStyled = styled.div`
+  padding: 15px 20px;
+  border: 2px solid #66ccff;
+`
+
+type Prop = {
+  initText?: string
+}
+
+type State = {
   readonly text: string
 }
 
-export default class UBBPlayground extends React.Component<{}, State>{
+class UBBPlayground extends React.Component<Prop, State>{
   state: State = {
-    text: ''
+    text: this.props.initText || ''
   }
 
   inputHandle(event: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -30,17 +40,24 @@ export default class UBBPlayground extends React.Component<{}, State>{
   }
 
   render() {
+
+    const { text } = this.state
     return (
       <>
         <TextareaStyled
+          value={text}
+          placeholder="UBB CODE"
           autoFocus={true} spellCheck={false}
           onChange={(e) => this.inputHandle(e)}
         />
-        <div>
-          { UBBReact(this.state.text) }
-        </div>
+        {
+          text && <UBBContainerStyled>
+            {UBBReact(text)}
+          </UBBContainerStyled>
+        }
       </>
     )
   }
 }
 
+export default UBBPlayground
