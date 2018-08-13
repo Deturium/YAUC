@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
+    "tsc": "tsc",
     "watch": "tsc -w",
     "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^3.0.1"
   }
 }

@@ -12,6 +12,15 @@ export default {
 
   propsParser: false,
 
+  themeConfig: {
+    // mode: 'dark',
+    colors: {
+      primary: 'tomato',
+      secondary: 'khaki',
+      gray: 'lightslategray',
+    },
+  },
+
   // plugins: [
   //
   // ]
