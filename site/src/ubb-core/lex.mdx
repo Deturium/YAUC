@@ -3,14 +3,29 @@ name: Lex
 menu: UBB-CORE
 ---
 
-import { Playground } from 'docz'
 import { lex } from 'ubb-core'
 
 # Lex
 
-<Playground>
-  {() => {
-    const iter = lex("[b] hello world [/b]")
-    return [...iter].map(i => i.rawText).join(',')
-  }}
-</Playground>
+### 函数签名
+
+```js
+/**
+ * 将 UBB 文本构造成流
+ * @param rawUBBText UBB 文本
+ */
+function* lex(rawUBBText: string): IterableIterator<IToken>
+```
+
+### 使用示例
+
+#### CODE
+```js
+const iter = lex("[b] hello world [/b]")
+[...iter].map(i => i.rawText).join(',')
+```
+
+#### OUTPUT
+```text
+[b], hello world, [/b]
+```
