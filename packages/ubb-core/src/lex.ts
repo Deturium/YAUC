@@ -14,49 +14,80 @@ export interface IToken {
   rawText: string
 }
 
+
 /**
  * 将 UBB 文本构造成流
  * @param rawUBBText UBB 文本
  */
 export function* lex(rawUBBText: string): IterableIterator<IToken> {
-  const tagReg = /\[.+?]/gi
-  let lastIndex = 0
 
-  while(true) {
-    const tag = tagReg.exec(rawUBBText)
-    if (!tag)
-      break
+  let startIndex = 0, endIndex = 0
 
-    if (lastIndex !== tag.index) {
-      yield {
-        type: TokenType.Text,
-        rawText: rawUBBText.slice(lastIndex, tag.index)
-      }
+  let state = TokenType.Text
+  let inSingleQuote = false, inDoubleQuote = false
+
+  const len = rawUBBText.length
+  while (endIndex < len) {
+
+    switch (rawUBBText[endIndex]) {
+      case '[':
+        if (!inSingleQuote && !inDoubleQuote) {
+          if (startIndex !== endIndex) {
+            yield {
+              type: state,
+              rawText: rawUBBText.slice(startIndex, endIndex)
+            }
+          }
+
+          // judge StartTag or EndTag
+          state = rawUBBText[endIndex + 1] === '/'
+            ? TokenType.StartTag
+            : TokenType.EndTag
+          startIndex = endIndex
+        }
+
+        break
+
+      case ']':
+        if (!inSingleQuote && !inDoubleQuote) {
+          yield {
+            type: state,
+            rawText: rawUBBText.slice(startIndex, endIndex + 1)
+          }
+
+          state = TokenType.Text
+          startIndex = endIndex + 1
+        }
+
+        break
+
+      case '"':
+        if (!inSingleQuote && state === TokenType.StartTag) {
+          inDoubleQuote = !inDoubleQuote
+        }
+
+        break
+
+      case "'":
+        if (!inDoubleQuote && state === TokenType.StartTag) {
+          inSingleQuote = !inSingleQuote
+        }
+
+        break
+
+      default:
+        // skip
     }
-    lastIndex = tag.index + tag[0].length
 
-    // EndTag
-    if (tag[0][1] === '/') {
-      yield {
-        type: TokenType.EndTag,
-        rawText: tag[0]
-      }
+    endIndex++
 
-    // StartTag
-    } else {
-      yield {
-        type: TokenType.StartTag,
-        rawText: tag[0]
-      }
-    }
   }
 
-  if (lastIndex !== rawUBBText.length) {
+  // don't fotget Text in the end
+  if (startIndex !== endIndex) {
     yield {
       type: TokenType.Text,
-      rawText: rawUBBText.slice(lastIndex)
+      rawText: rawUBBText.slice(startIndex, endIndex)
     }
   }
 }
-
-// FIXME: 解析 "" '' 的转义
