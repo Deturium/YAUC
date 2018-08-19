@@ -11,4 +11,6 @@ lerna-debug.log
 
 dist/
 
-.docz
+.docz/
+
+coverage/

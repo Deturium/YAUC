@@ -81,7 +81,7 @@ export interface IHandlerHub<T> {
  * @param content 上下文
  */
 export function handlerNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, content: IContent): T {
-  if (node.type === NodeType.Tag) {
+  if (node.type === NodeType.TAG) {
     // HANDLE TAG_NODE
     const tagNode = node as TagNode
     const tagName = tagNode.tagName

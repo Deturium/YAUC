@@ -1,14 +1,14 @@
 import {
-  TokenType, IToken,
+  TokenType, IToken, parseTagData, ITagData
 } from './lex'
 
 export const enum NodeType {
   /** 根节点 */
-  Root,
+  ROOT,
   /** 文本节点 */
-  Text,
+  TEXT,
   /** 标签节点 */
-  Tag,
+  TAG,
 }
 
 export interface INode {
@@ -16,14 +16,14 @@ export interface INode {
 }
 
 export class RootNode implements INode {
-  type: NodeType = NodeType.Root
+  type: NodeType = NodeType.ROOT
   children: ChildNode[] = []
 
   _isClose: boolean = false
 }
 
 export class TextNode implements INode {
-  type: NodeType = NodeType.Text
+  type: NodeType = NodeType.TEXT
   parent: ParentNode
 
   readonly text: string
@@ -35,14 +35,12 @@ export class TextNode implements INode {
 }
 
 export class TagNode implements INode {
-  type: NodeType = NodeType.Tag
+  type: NodeType = NodeType.TAG
   parent: ParentNode
   children: ChildNode[] = []
 
-  tagName!: string
-  tagData!: {
-    [key: string]: string
-  }
+  tagName: string
+  tagData: ITagData
 
   _isClose: boolean = false
   _rawText: string
@@ -51,20 +49,9 @@ export class TagNode implements INode {
     this._rawText = rawText
     this.parent = parent
 
-    this._parseTag(rawText)
-  }
-
-  /**
-   * parse Tag in constructor
-   * @param rawText
-   */
-  _parseTag(rawText: string) {
-    // [b] --> b
-    const str = rawText.slice(1, -1)
-
-    // TODO:
-    this.tagName = str.toLowerCase()
-    this.tagData = {}
+    // parse TAG
+    this.tagData = parseTagData(rawText)
+    this.tagName = this.tagData.__tagName__
   }
 
   get text(): string {
@@ -99,7 +86,7 @@ function close(node: ParentNode, recursive = false) {
   const children: ChildNode[] = []
 
   const flat = (child: ChildNode) => {
-    if (child.type === NodeType.Tag && (child as TagNode)._isClose === false) {
+    if (child.type === NodeType.TAG && (child as TagNode)._isClose === false) {
       const tagChild = child as TagNode
       children.push(new TagNode(tagChild._rawText, node))
       tagChild.children.forEach(flat)
@@ -127,16 +114,16 @@ export function parse(tokenIterator: IterableIterator<IToken>): RootNode {
   let curNode: ParentNode = root
 
   for (let token of tokenIterator) {
-    if (token.type === TokenType.Text) {
+    if (token.type === TokenType.TEXT) {
       curNode.children.push(new TextNode(token.rawText, curNode))
 
-    } else if (token.type === TokenType.StartTag) {
+    } else if (token.type === TokenType.START_TAG) {
       const tagNode: TagNode = new TagNode(token.rawText, curNode)
       curNode.children.push(tagNode)
       curNode = tagNode
       startTagStack.push(tagNode)
 
-    } else if (token.type === TokenType.EndTag) {
+    } else if (token.type === TokenType.END_TAG) {
       // parse EndTag
       //   e.g. [/b] --> b
       const tagName = token.rawText.slice(2, -1).toLowerCase()

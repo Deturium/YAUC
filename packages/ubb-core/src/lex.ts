@@ -1,10 +1,12 @@
+import { TagNode } from "./parse";
+
 export const enum TokenType {
   /** 纯文本 */
-  Text,
+  TEXT,
   /** 开始标签，[\w+] */
-  StartTag,
+  START_TAG,
   /** 结束标签，[/\w+] */
-  EndTag,
+  END_TAG,
 }
 
 export interface IToken {
@@ -23,7 +25,7 @@ export function* lex(rawUBBText: string): IterableIterator<IToken> {
 
   let startIndex = 0, endIndex = 0
 
-  let state = TokenType.Text
+  let state = TokenType.TEXT
   let inSingleQuote = false, inDoubleQuote = false
 
   const len = rawUBBText.length
@@ -31,63 +33,193 @@ export function* lex(rawUBBText: string): IterableIterator<IToken> {
 
     switch (rawUBBText[endIndex]) {
       case '[':
-        if (!inSingleQuote && !inDoubleQuote) {
+        if (state === TokenType.TEXT) {
           if (startIndex !== endIndex) {
             yield {
-              type: state,
+              type: TokenType.TEXT,
               rawText: rawUBBText.slice(startIndex, endIndex)
             }
           }
 
-          // judge StartTag or EndTag
+          // judge START_TAG or END_TAG
           state = rawUBBText[endIndex + 1] === '/'
-            ? TokenType.StartTag
-            : TokenType.EndTag
+            ? TokenType.END_TAG
+            : TokenType.START_TAG
           startIndex = endIndex
         }
 
         break
 
       case ']':
-        if (!inSingleQuote && !inDoubleQuote) {
+        if (!inSingleQuote && !inDoubleQuote && state !== TokenType.TEXT) {
           yield {
             type: state,
             rawText: rawUBBText.slice(startIndex, endIndex + 1)
           }
 
-          state = TokenType.Text
+          state = TokenType.TEXT
           startIndex = endIndex + 1
         }
 
         break
 
       case '"':
-        if (!inSingleQuote && state === TokenType.StartTag) {
+        if (!inSingleQuote && state === TokenType.START_TAG) {
           inDoubleQuote = !inDoubleQuote
         }
 
         break
 
       case "'":
-        if (!inDoubleQuote && state === TokenType.StartTag) {
+        if (!inDoubleQuote && state === TokenType.START_TAG) {
           inSingleQuote = !inSingleQuote
         }
 
         break
 
       default:
-        // skip
+      // skip
     }
 
     endIndex++
 
   }
 
-  // don't fotget Text in the end
+  // don't fotget TEXT in the end
   if (startIndex !== endIndex) {
     yield {
-      type: TokenType.Text,
+      type: TokenType.TEXT,
       rawText: rawUBBText.slice(startIndex, endIndex)
     }
   }
+}
+
+
+export interface ITagData {
+  __tagName__: string
+  [key: string]: string
+}
+
+const enum ParseState {
+  KEY,
+  VALUE,
+}
+
+/**
+ * 解析 TagData
+ * @param rawText tagText like "[b, attr=xxx]"
+ */
+export function parseTagData(rawText: string): ITagData {
+
+  const tagData: ITagData = {
+    __tagName__: ''
+  }
+  let key: string = ''
+  let value: string = ''
+
+  let startIndex =  1
+  let endIndex = 1
+  const len = rawText.length - 1
+
+  // state variable
+  let parseState = ParseState.KEY
+  let isFirstKey = true
+
+  const parseKey = () => {
+    while (endIndex < len) {
+      if (rawText[endIndex] === '=' || rawText[endIndex] === ',')
+        break
+      endIndex++
+    }
+
+    return rawText.slice(startIndex, endIndex).trim()
+  }
+
+  const parseValue = () => {
+    while (endIndex < len && rawText[endIndex] === ' ') {
+      startIndex++
+      endIndex++
+    }
+
+    const startQuote = rawText[endIndex]
+
+    if (startQuote !== '"' && startQuote !== "'") {
+      while (endIndex < len) {
+        if (rawText[endIndex] === ',')
+          break
+        endIndex++
+      }
+
+      return rawText.slice(startIndex, endIndex).trim()
+    }
+
+    let index = startIndex + 1
+    do {
+      index = rawText.indexOf(startQuote, index)
+      // handle case "xxx""xxx"
+      if (index === -1 || rawText[index + 1] !== startQuote) {
+        break
+      }
+
+      index += 2
+    } while(1)
+
+    // quote miss match
+    endIndex = index === -1
+      ? rawText.length - 1
+      : index + 1
+
+    if (index === -1) {
+      return rawText.slice(startIndex, endIndex).trim()
+    } else {
+      return rawText.slice(startIndex + 1, endIndex - 1)
+        .replace(startQuote + startQuote, startQuote) // "xxx""xxx" => xxx"xxx
+    }
+  }
+
+  while (endIndex < len) {
+
+    if (parseState === ParseState.KEY) {
+      key = parseKey()
+    } else {
+      value = parseValue()
+    }
+
+    if (isFirstKey) {
+      tagData["__tagName__"] = key
+      isFirstKey = false
+    }
+
+    startIndex = endIndex + 1
+
+    switch (rawText[endIndex]) {
+      case ',':
+        if (key) {
+          if (parseState === ParseState.KEY) {
+            tagData[key] = ''
+          } else {
+            tagData[key] = value
+          }
+        }
+        parseState = ParseState.KEY
+        endIndex++
+        break
+
+      case '=':
+        parseState = ParseState.VALUE
+        endIndex++
+        break
+
+      default:
+        parseState = ParseState.KEY
+        startIndex--
+    }
+
+  }
+
+  if (key) {
+    tagData[key] = value
+  }
+
+  return tagData
 }
