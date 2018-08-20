@@ -3,9 +3,9 @@ import { TagNode } from "./parse";
 export const enum TokenType {
   /** 纯文本 */
   TEXT,
-  /** 开始标签，[\w+] */
+  /** 开始标签 */
   START_TAG,
-  /** 结束标签，[/\w+] */
+  /** 结束标签 */
   END_TAG,
 }
 
@@ -85,7 +85,7 @@ export function* lex(rawUBBText: string): IterableIterator<IToken> {
 
   }
 
-  // don't fotget TEXT in the end
+  // don't froget TEXT in the end
   if (startIndex !== endIndex) {
     yield {
       type: TokenType.TEXT,
@@ -214,7 +214,6 @@ export function parseTagData(rawText: string): ITagData {
         parseState = ParseState.KEY
         startIndex--
     }
-
   }
 
   if (key) {

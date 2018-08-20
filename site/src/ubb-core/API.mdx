@@ -1,0 +1,75 @@
+---
+name: API
+menu: UBB-CORE
+---
+
+import { lex } from 'ubb-core'
+
+# API
+
+此处是 `ubb-core` 所有导出函数的 `API` 文档
+
+## Lex
+
+`Lex` 函数用于将原始的 UBB 文本转换为 `Token` 流，解析出的 `Token` 流将会接下来交由 `parse` 处理
+
+
+### 函数签名
+
+```js
+/**
+ * 将 UBB 文本构造成流
+ * @param rawUBBText UBB 文本
+ */
+function* lex(rawUBBText: string): IterableIterator<IToken>
+```
+
+
+### 注解
+
+#### Token
+
+我们有如下的三种 `Token`
+
+```js
+enum TokenType {
+  /** 纯文本 */
+  TEXT,
+  /** 开始标签 */
+  START_TAG,
+  /** 结束标签 */
+  END_TAG,
+}
+
+interface IToken {
+  /** Token 类型 */
+  type: TokenType
+  /** Token 值 */
+  rawText: string
+}
+```
+
+
+### 使用示例
+
+#### CODE
+```js
+const iter = lex("[b] hello world [/b]")
+[...iter].map(i => console.log(i))
+```
+
+#### OUTPUT
+```js
+{
+  type: START_TAG, // 实际由 ts 编译之后会变成数字常量，比如 0
+  rawText: "[b]"
+}
+{
+  type: TEXT
+  rawText: " hello world"
+}
+{
+  type: END_TAG,
+  rawText: "[/b]"
+}
+```

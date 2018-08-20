@@ -1,6 +1,10 @@
 {
   "name": "@cc98/ubb-core",
   "version": "1.0.1",
+  "description": "YAUC Core.",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "scripts": {
     "tsc": "tsc",

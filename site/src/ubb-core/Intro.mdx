@@ -1,0 +1,83 @@
+---
+name: Intro
+menu: UBB-CORE
+order: 10
+---
+
+
+# ubb-core
+
+`ubb-core` 是 `YAUC` 的核心，对外暴露一系列工具函数帮助用户处理 `UBB`
+
+
+## Workflow
+
+我们遵循如下的流程来解析 `UBB`
+
+注意，这里的输入输出只是为了释义，每个步骤的具体情况请看具体函数的 `API`
+
+
+##### Input
+
+```text
+[b, color="red"] hello world [/b]
+```
+
+#### 1. 将 UBB 文本解析成 Token 流
+
+这部分工作由 `ubb-core` 导出的 `lex` 函数承担
+
+##### Output
+
+```js
+{
+  type: START_TAG,
+  rawText: '[b, color="red"]'
+}
+{
+  type: TEXT,
+  rawText: " hello world"
+}
+{
+  type: END_TAG,
+  rawText: "[/b]"
+}
+```
+
+#### 2. 将 Token 流构造成 AST
+
+上一步生成的 `Token` 流 在这里被解析
+
+这部分工作由 `ubb-core` 导出的 `parse` 函数承担
+
+其中 `tagData` 的解析由 `parseTagData` 函数承担
+
+##### Output
+
+注：此处省略了AST 上的部分属性
+
+```js
+{
+  type: ROOT,
+  children: [
+    {
+      type: TAG,
+      tagName: 'b',
+      tagData: {
+        color: 'red'
+      }
+      children: [
+        { type: TEXT, text: " hello world "}
+      ]
+    }
+  ]
+}
+```
+
+#### 3. 将 AST 转换为合适的输出
+
+这部分工作由 `ubb-core` 导出的 `build` 函数承担
+
+`ubb-core` 本身没有转换能力，具体如何转换每一个节点，取决于用户自定义的 `handlerHub`
+
+其中 `@cc98/ubb-react` 就是借助以上工具函数将 `UBB` 转换为 `reactNode` 的一种实现

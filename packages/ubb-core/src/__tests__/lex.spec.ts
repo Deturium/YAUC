@@ -124,13 +124,13 @@ describe('Special case TEST', () => {
 
 describe('Escape TEST', () => {
 
-  it('basic "" Escape', () => {
+  it('basic " and \' Escape', () => {
     check(
 
-      `[t, attr="[err]"]xxxx[/t]`,
+      `[t, attr="[err]", attr='[err]']xxxx[/t]`,
 
       [
-        StartTagToken(`[t, attr="[err]"]`),
+        StartTagToken(`[t, attr="[err]", attr='[err]']`),
         TextToken('xxxx'),
         EndTagToken('[/t]'),
       ]
@@ -153,10 +153,10 @@ describe('Escape TEST', () => {
   it('" include \'', () => {
     check(
 
-      `[t, attr="'[err]"]xxxx`,
+      `[t, attr="'[err]", attr='"[]']xxxx`,
 
       [
-        StartTagToken(`[t, attr="'[err]"]`),
+        StartTagToken(`[t, attr="'[err]", attr='"[]']`),
         TextToken('xxxx'),
       ]
     )

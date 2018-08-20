@@ -1,6 +1,7 @@
 {
   "name": "@cc98/ubb-site",
   "version": "1.0.1",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/Deturium/UBB"

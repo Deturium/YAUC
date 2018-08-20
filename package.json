@@ -1,5 +1,5 @@
 {
-  "name": "cc98-ubb",
+  "name": "yauc",
   "version": "0.1.0",
   "description": "Yet Another UBB for CC98.",
   "keywords": [
@@ -13,10 +13,11 @@
     "clean": "lerna run clean && lerna clean",
     "tsc": "lerna run --parallel tsc",
     "watch": "lerna run --parallel watch",
-    "docz:dev": "lerna run --parallel --scope ubb-site docz:dev",
-    "docz:build": "lerna run --parallel --scope ubb-site docz:build"
+    "test": "lerna run --parallel test",
+    "docz:dev": "lerna run --parallel --scope @cc98/ubb-site docz:dev",
+    "docz:build": "lerna run --parallel --scope @cc98/ubb-site docz:build"
   },
   "devDependencies": {
-    "lerna": "^2.11.0"
+    "lerna": "^3.1.1"
   }
 }

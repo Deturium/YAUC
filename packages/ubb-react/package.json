@@ -1,7 +1,11 @@
 {
   "name": "@cc98/ubb-react",
   "version": "1.0.1",
+  "description": "YAUC React version.",
   "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc -w",

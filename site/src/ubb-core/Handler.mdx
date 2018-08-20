@@ -1,0 +1,37 @@
+---
+name: Handler
+menu: UBB-CORE
+order: 5
+---
+
+
+# Handler
+
+`ubb-core` 的解析能力依赖于用户自定义的 `handler`
+
+这里我们会解释和 `handler` 有关的一切
+
+
+## HandlerHub
+
+我们会把所有的 `handler` 在一起形成一个 `HandlerHub`
+
+```js
+interface IHandlerHub<T> {
+  /** 根节点 Handler */
+  rootHandler: IRootHandler<T>
+
+  /** 具名 tag 节点 Handler */
+  specificTagHandlers: {
+    [key: string]: ITagHandler<T>
+  }
+  /** 通配 tag 节点 Handler（HINT: 注意处理顺序） */
+  generalTagHandlers: IGeneralTagHandler<T>[]
+
+  /** 默认 TagHandler */
+  defaultTagHandler: ITagHandler<T>
+
+  /** 文本节点 Handler */
+  textHandler: ITextHandler<T>
+}
+```
