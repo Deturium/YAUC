@@ -1,4 +1,4 @@
-import UBB from 'ubb-core'
+import UBB from '@cc98/ubb-core'
 import React from 'react'
 
 import handlerHub from './src/handlerHub'

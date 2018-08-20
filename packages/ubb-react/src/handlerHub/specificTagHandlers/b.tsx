@@ -1,7 +1,7 @@
 import {
   ITagHandler,
   TagNode, IContent,
-} from 'ubb-core'
+} from '@cc98/ubb-core'
 
 import React from 'react'
 

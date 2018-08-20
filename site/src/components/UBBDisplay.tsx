@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import UBBReact from 'ubb-react'
+import UBBReact from '@cc98/ubb-react'
 
 const UBBCodeStyled = styled.div`
   padding: 15px 20px;

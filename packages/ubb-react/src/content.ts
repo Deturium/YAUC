@@ -1,6 +1,6 @@
 import {
   IContent
-} from 'ubb-core'
+} from '@cc98/ubb-core'
 
 const content: IContent = {
 
