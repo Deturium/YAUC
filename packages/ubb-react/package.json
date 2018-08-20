@@ -1,6 +1,6 @@
 {
-  "name": "ubb-react",
-  "version": "1.0.0",
+  "name": "@cc98/ubb-react",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "scripts": {
     "tsc": "tsc",
@@ -11,10 +11,10 @@
     "ubb-core": "^1.0.0"
   },
   "peerDependencies": {
-    "react": "^16.4.1"
+    "react": "^16.4.2"
   },
   "devDependencies": {
-    "@types/react": "^16.4.7",
+    "@types/react": "^16.4.11",
     "typescript": "^3.0.1"
   }
 }

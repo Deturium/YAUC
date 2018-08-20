@@ -1,11 +1,11 @@
 {
-  "name": "ubb-core",
-  "version": "1.0.0",
+  "name": "@cc98/ubb-core",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc -w",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist coverage",
     "test": "jest"
   },
   "devDependencies": {
