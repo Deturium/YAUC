@@ -1,12 +1,12 @@
-export * from './src/lex'
+export * from './lex'
 
-export * from './src/parse'
+export * from './parse'
 
-export * from './src/build'
+export * from './build'
 
-import { lex } from './src/lex'
-import { parse } from './src/parse'
-import { build, IHandlerHub, IContent } from './src/build'
+import { lex } from './lex'
+import { parse } from './parse'
+import { build, IHandlerHub, IContent } from './build'
 
 /**
  * 构造 UBB 文本为 T

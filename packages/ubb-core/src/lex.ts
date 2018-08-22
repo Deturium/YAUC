@@ -190,16 +190,18 @@ export function parseTagData(rawText: string): ITagData {
       isFirstKey = false
     }
 
+    if (endIndex >= len) {
+      break
+    }
+
     startIndex = endIndex + 1
 
     switch (rawText[endIndex]) {
       case ',':
         if (key) {
-          if (parseState === ParseState.KEY) {
-            tagData[key] = ''
-          } else {
-            tagData[key] = value
-          }
+          tagData[key] = parseState === ParseState.KEY
+            ? ''
+            : value
         }
         parseState = ParseState.KEY
         endIndex++
@@ -217,7 +219,9 @@ export function parseTagData(rawText: string): ITagData {
   }
 
   if (key) {
-    tagData[key] = value
+    tagData[key] = parseState === ParseState.KEY
+      ? ''
+      : value
   }
 
   return tagData

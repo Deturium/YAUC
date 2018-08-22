@@ -1,8 +1,8 @@
-import UBB from '@cc98/ubb-core'
 import React from 'react'
+import UBB from '@cc98/ubb-core'
 
-import handlerHub from './src/handlerHub'
-import content from './src/content'
+import handlerHub from './handlerHub'
+import content from './content'
 
 export default function UBBReact(ubbText: string) {
   return UBB<React.ReactNode>(ubbText, handlerHub, content)

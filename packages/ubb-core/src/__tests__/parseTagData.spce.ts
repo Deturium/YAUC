@@ -1,4 +1,3 @@
-
 import { parseTagData } from '../lex'
 
 
@@ -38,6 +37,20 @@ describe('Basic TEST', () => {
         b: '',
         attr: '123',
         attr2: '456',
+      }
+    )
+  })
+
+  it('simple attr with no value', () => {
+    expect(
+      parseTagData('[b, attr=123, attr2]')
+    )
+    .toEqual(
+      {
+        __tagName__: "b",
+        b: '',
+        attr: '123',
+        attr2: '',
       }
     )
   })
