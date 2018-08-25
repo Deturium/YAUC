@@ -10,7 +10,7 @@ const handler: ITagHandler<React.ReactNode> = {
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
     const style: React.CSSProperties = {
-      fontWeight: 'bold',
+      textDecoration: 'line-through',
     }
 
     return (

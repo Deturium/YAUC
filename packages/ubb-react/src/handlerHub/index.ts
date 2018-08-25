@@ -5,8 +5,8 @@ import {
 import React from 'react'
 
 import rootHandler from './rootHandler'
-import specificTagHandlers from './specificTagHandlers'
-import generalTagHandlers from './generalTagHandlers'
+import specificTagHandlers from './specificTagHandlers/_index'
+import generalTagHandlers from './generalTagHandlers/_index'
 import defaultTagHandler from './defaultTagHandler'
 import textHandler from './textHandler'
 

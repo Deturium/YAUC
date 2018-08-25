@@ -54,11 +54,13 @@ export class TagNode implements INode {
     this.tagName = this.tagData.__tagName__
   }
 
+  get innerText(): string {
+    return this.children.map(n => n.text).join('')
+  }
+
   get text(): string {
-    return [this._rawText].concat(
-      this.children.map(n => n.text),
-      `${ this._isClose ? `[/${this.tagName}]` : ''}`, // close tag
-    ).join('')
+    // startTag + innerText + endTag
+    return `${this._rawText}${this.innerText}${this._isClose ? `[/${this.tagName}]` : ''}`
   }
 }
 
@@ -86,15 +88,12 @@ function close(node: ParentNode, recursive = false) {
   const children: ChildNode[] = []
 
   const flat = (child: ChildNode) => {
-    if (child.type === NodeType.TAG && (child as TagNode)._isClose === false) {
-      const tagChild = child as TagNode
-      children.push(new TagNode(tagChild._rawText, node))
-      tagChild.children.forEach(flat)
+    // 修改 parent 的指向
+    child.parent = node
+    children.push(child)
 
-    } else {
-      // 修改 parent 的指向
-      child.parent = node
-      children.push(child)
+    if (child.type === NodeType.TAG && (child as TagNode)._isClose === false) {
+      (child as TagNode).children.forEach(flat)
     }
   }
 

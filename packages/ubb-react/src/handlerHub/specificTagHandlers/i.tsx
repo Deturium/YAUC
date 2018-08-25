@@ -9,10 +9,12 @@ const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
+    const style: React.CSSProperties = {
+      fontStyle: 'italic',
+    }
+
     return (
-      <span style={{
-          fontStyle: 'italic',
-        }}>
+      <span style={style}>
         { children }
       </span>
     )

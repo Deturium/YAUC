@@ -8,6 +8,7 @@ const UBBCodeStyled = styled.div`
   margin-bottom: 20px;
   padding: 15px 20px;
   border: 2px solid #ccc;
+  white-space: pre-wrap;
 `
 
 const UBBContainerStyled = styled.div`
@@ -20,13 +21,21 @@ type Prop = {
 }
 
 const UBBDisplay: React.SFC<Prop> = ({text}) => {
+  let display: React.ReactNode = ''
+
+  try {
+    display = UBBReact(text)
+  } catch (_) {
+    display = 'ERROR'
+  }
+
   return (
     <>
       <UBBCodeStyled>
         {text}
       </UBBCodeStyled>
       <UBBContainerStyled>
-        {UBBReact(text)}
+        {display}
       </UBBContainerStyled>
     </>
   )

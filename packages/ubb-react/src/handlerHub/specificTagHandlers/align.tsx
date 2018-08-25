@@ -9,14 +9,16 @@ const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
-    const style: React.CSSProperties = {
-      fontWeight: 'bold',
-    }
+    const { align } = node.tagData
+
+    const style = {
+      textAlign: align,
+    } as React.CSSProperties
 
     return (
-      <span style={style}>
+      <div style={style}>
         { children }
-      </span>
+      </div>
     )
   },
 }
