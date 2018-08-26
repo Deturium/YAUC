@@ -1,0 +1,114 @@
+---
+name: AST
+menu: UBB-CORE
+order: 8
+---
+
+# AST
+
+如之前所述，这里的 AST 就是经过 `lex` 和 `parse` 解析之后的 UBB 的抽象语法树
+
+我们有 `RootNode`, `TagNode`, `TextNode` 三类节点，他们都是实现了 `INode` 的接口：
+
+```js
+const enum NodeType {
+  /** 根节点 */
+  ROOT,
+  /** 文本节点 */
+  TEXT,
+  /** 标签节点 */
+  TAG,
+}
+
+interface INode {
+  type: NodeType
+}
+```
+
+
+另外我们有：
+
+```js
+/**
+ * 可以当做一个节点的父节点
+ */
+type ParentNode = RootNode | TagNode
+
+/**
+ * 可以当做一个节点的子节点
+ */
+type ChildNode = TextNode | TagNode
+```
+
+`ParentNode` 意味着可以作为一个节点的父节点，也就是可以作为一个节点的 `parent` 属性
+
+`ChildNode` 意味着可以作为一个节点的子节点，也就是可以被放入一个节点的 `children` 属性
+
+
+## RootNode
+
+```js
+class RootNode implements INode {
+  type: NodeType = NodeType.ROOT
+  children: ChildNode[] = []
+
+  _isClose: boolean = false
+}
+```
+
+`RootNode` 作为整棵 AST 的根节点，有且只有一个
+
+`_isClose` 属性在整个解析完成后一定为 `true`
+
+
+## TagNode
+
+```js
+interface ITagData {
+  __tagName__: string
+  [key: string]: string
+}
+
+class TagNode implements INode {
+  type: NodeType = NodeType.TAG
+  parent: ParentNode
+  children: ChildNode[] = []
+
+  tagName: string
+  tagData: ITagData
+
+  _isClose: boolean = false
+  _rawText: string
+
+  get innerText(): string {...}
+  get text(): string {...}
+
+  constructor(rawText: string, parent: ParentNode) {...}
+}
+```
+
+`TagNode` 是由 `[color=#66ccff]xxx[/color]` 这样的标签解析出来的节点
+
+其中 `tagData` 上有该节点上的所有参数，其上的 `__tagName__` 一项就是 `tagName`
+
+如果 `_isClose` 为 `false` 那么意味着这个标签可能写错了，或者这是一个 `[ac01]` 这样的不闭合标签，需要在写 `hanlder` 的时候小心处理
+
+`_rawText` 就是完整的原始文本，部分情况下，当我提供的 `tagData` 不满足需求的时候，可能需要你自行解析
+
+`innerText` 和 `text` 用于该节点和所有子节点退化为纯文本，差别在于前者不包括标签本身，只有内部文本。
+
+
+## TextNode
+
+```js
+class TextNode implements INode {
+  type: NodeType = NodeType.TEXT
+  parent: ParentNode
+
+  readonly text: string
+
+  constructor(rawText: string, parent: ParentNode) {...}
+}
+```
+
+`TextNode` 十分简单，不必多说

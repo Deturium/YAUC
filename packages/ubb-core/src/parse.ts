@@ -104,7 +104,6 @@ function close(node: ParentNode, recursive = false) {
 /**
  * 将 Token 流构造成 AST
  * @param tokenFlow
- * @param parseConfig
  */
 export function parse(tokenIterator: IterableIterator<IToken>): RootNode {
   const root = new RootNode()

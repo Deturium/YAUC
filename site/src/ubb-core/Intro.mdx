@@ -78,6 +78,106 @@ order: 10
 
 这部分工作由 `ubb-core` 导出的 `build` 函数承担
 
-`ubb-core` 本身没有转换能力，具体如何转换每一个节点，取决于用户自定义的 `handlerHub`
+`ubb-core` **本身没有转换能力**，具体如何转换每一个节点，取决于用户自定义的 `handlerHub`
 
 其中 `@cc98/ubb-react` 就是借助以上工具函数将 `UBB` 转换为 `reactNode` 的一种实现
+
+
+<br />
+
+综上所述，`ubb-core` 的工作流程大致可以整合为:
+
+```js
+const rawUBBText = 'YOUR UBB CORE HERE'
+
+build(
+  parse(lex(rawUBBText)),
+  handlerHub,  // 自定义的 handler
+  initContent, // 配合 handler 的初始化上下文
+)
+```
+
+总的来说，就是我们会按照 `handlerHub` 的规则来处理我们用 `lex` 和 `parse` 处理之后得到的 AST
+
+
+而这一整套流程的集合也就是 `ubb-core` 的默认导出所做的工作。
+
+
+## AST
+
+UBB 的 AST 表示并不复杂。
+
+具体请看左侧 AST 目录下的详细介绍。
+
+
+## handlerHub
+
+具体请看左侧 handlerHub 目录下的详细介绍。
+
+
+## 导出 API
+
+这里提供 `ubb-core` 导出的所有 API 的接口定义，具体请看左侧 API 目录下的详细介绍。
+
+现在包括默认导出一共有 6 个 API：
+
+```js
+/**
+ * 将 UBB 文本构造成流
+ * @param rawUBBText UBB 文本
+ */
+function* lex(rawUBBText: string): IterableIterator<IToken> {...}
+
+
+/**
+ * 解析 TagData
+ * @param rawText tagText like "[b, attr=xxx]"
+ */
+function parseTagData(rawText: string): ITagData {...}
+
+
+/**
+ * 将 Token 流构造成 AST
+ * @param tokenFlow
+ */
+function parse(tokenIterator: IterableIterator<IToken>): RootNode {...}
+
+
+/**
+ * DFS 构造目标输出
+ * @param root AST 根节点
+ * @param handlerHub 所有的处理器集合
+ * @param initContent 初始上下文状态
+ */
+function build<T>(
+  root: RootNode,
+  handlerHub: IHandlerHub<T>,
+  initContent: IContent
+): T {...}
+
+
+/**
+ * DFS 处理一个节点（不能是根节点）
+ * @param node 处理节点
+ * @param handlerHub 处理函数
+ * @param content 上下文
+ */
+function handlerNode<T>(
+  node: ChildNode,
+  handlerHub: IHandlerHub<T>,
+  content: IContent
+): T {...}
+
+
+/**
+ * 构造 UBB 文本为 T
+ * @param UBBText UBB 文本
+ * @param handlerHub 所有 Handler 集合
+ * @param initContent 初始化上下文（配置项）
+ */
+export default function UBB<T>(
+  UBBText: string,
+  handlerHub: IHandlerHub<T>,
+  initContent: IContent
+): T {...}
+```

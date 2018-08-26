@@ -20,7 +20,7 @@ const UBBContainerStyled = styled.div`
   border: 2px solid #66ccff;
 `
 
-type Prop = {
+type Props = {
   initText?: string
 }
 
@@ -28,7 +28,7 @@ type State = {
   readonly text: string
 }
 
-class UBBPlayground extends React.Component<Prop, State>{
+class UBBPlayground extends React.Component<Props, State>{
   state: State = {
     text: this.props.initText || ''
   }

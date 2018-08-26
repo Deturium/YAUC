@@ -16,12 +16,12 @@ const UBBContainerStyled = styled.div`
   border: 2px solid #66ccff;
 `
 
-type Prop = {
+type Props = {
   text: string
 }
 
-const UBBDisplay: React.SFC<Prop> = ({text}) => {
-  let display: React.ReactNode = ''
+const UBBDisplay: React.SFC<Props> = ({text}) => {
+  let display: React.ReactNode
 
   try {
     display = UBBReact(text)
