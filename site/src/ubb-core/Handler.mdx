@@ -12,9 +12,95 @@ order: 5
 这里我们会解释和 `handler` 有关的一切
 
 
+## 定义
+
+handler 就是教会我们的 `build` 函数如何去转换每一个节点
+
+以下是两个未导出的 handler 的基础类型，他们会作为之后 handler 的基础
+
+```js
+interface RecursiveTagHandler<T> {
+  /** 是否递归处理子标签 */
+  isRecursive: true
+
+  /** 进入节点时触发 */
+  enter?(node: TagNode, content: IContent): void
+
+  /** 离开节点时触发 */
+  exit?(node: TagNode, content: IContent): void
+
+  /** 渲染该节点，返回渲染结果 */
+  render(node: TagNode, content: IContent, children: T[]): T
+}
+
+interface NotRecursiveTagHandler<T> {
+  isRecursive: false
+  enter?(node: TagNode, content: IContent): void
+  exit?(node: TagNode, content: IContent): void
+  render(node: TagNode, content: IContent): T
+}
+```
+
+
+### isRecursive
+
+用于标识这个节点是不是需要递归处理
+
+`isRecursive` 为 `false` 的节点的子节点将不会被遍历，其 `handler` 的 `render` 函数也没有 `children` 参数
+
+
+### render
+
+这里最重要的是我们的 `render` 函数
+
+我们知道转换过程实际是一个 DFS 的过程
+
+`node` 就是我们 DFS 到的当前节点，`content` 是 DFS 过程中的上下文，这个上下文贯穿始终，可以在任何节点修改，而 `children` 就是该节点所有子节点的渲染结果
+
+那么假如我要处理一个加粗的标签，那么我可以这么做：
+
+```js
+{
+  render(node: TagNode, content: IContent, children: string[]): string {
+    return `<span style="font-weight=bold">${children.join('')}</span>`
+  }
+}
+```
+
+
+### enter & exit
+
+这里的设计我参考了 `babel`，在 `enter` 中我们可以做一些初始化工作，在 `exit` 之中我们可以做一些清理工作
+
+比方说我们想计数 ubb 最深的嵌套次数，那么我可以这么做：
+
+```js
+{
+  enter(node: TagNode, content: IContent): void {
+    if (content.cnt > content.max) {
+      content.max = content.cnt
+    }
+    content.cnt++
+  }
+
+  exit(node: TagNode, content: IContent): void {
+    content.cnt--
+  }
+}
+```
+
+这样遍历完成之后，`content.max` 就是我们想知道的最深嵌套层数了
+
+当然这是示例，实际上，这两个钩子的真正用处体现在以下两点:
+
+1. 明确的让你知道自己的解析过程到达了什么位置
+
+2. 让你能够去直接修改 AST 或者通过改变 `content` 来改变渲染行为
+
+
 ## HandlerHub
 
-我们会把所有的 `handler` 在一起形成一个 `HandlerHub`
+我们会把所有的 `handler` 聚集在一起形成一个 `HandlerHub`，其中我们主要有以下几种类型的 `handler`
 
 ```js
 interface IHandlerHub<T> {
@@ -35,3 +121,104 @@ interface IHandlerHub<T> {
   textHandler: ITextHandler<T>
 }
 ```
+
+总的来说，我们的规则如下：
+
+- `RootNode` 对应 `rootHandler`
+
+- `TextNode` 对应 `textHandler`
+
+- `TagNode` 稍微复杂一些，对应剩余三类 `handler`
+
+具体选择规则如下：
+
+1. 闭合的具名标签比如 `[b] bold [/b]` 对应 `specificTagHandlers[b]`
+
+2. 未闭合的标签我们会按照顺序尝试匹配 `generalTagHandlers 中的 `handler`
+
+3. 如果还有不能处理的，移交给 `defaultTagHandler` 处理
+
+注意：“闭合”的判定是根据 `TagNode` 上的 `_isClose` 属性
+
+
+## specificTagHandlers
+
+
+### 类型定义
+
+```js
+type ITagHandler<T> = RecursiveTagHandler<T> | NotRecursiveTagHandler<T>
+```
+
+这就是我们之前描述里说的基础 handler 的样子
+
+
+
+## generalTagHandlers
+
+### 类型定义
+
+```js
+interface RecursiveGeneralTagHandler<T> extends RecursiveTagHandler<T> {
+  /** 匹配标签的正则 */
+  match: RegExp
+}
+
+interface NotRecursiveGeneralTagHandler<T> extends NotRecursiveTagHandler<T> {
+  match: RegExp
+}
+
+type IGeneralTagHandler<T> = RecursiveGeneralTagHandler<T> | NotRecursiveGeneralTagHandler<T>
+```
+
+相比之下，`IGeneralTagHandler` 就是多了一个 match 的属性，用于匹配需要处理的标签
+
+值得注意的是，一定要明确 `IGeneralTagHandler` 的匹配顺序，一个 TagNode 只会被一个 `IGeneralTagHandler` 处理
+
+
+
+## defaultTagHandler
+
+
+没什么特殊的，其就是一个 `NotRecursiveTagHandler` 而已
+
+值得注意的是这里你可能需要对闭合和未闭合的标签做出不同的处理
+
+
+
+## rootHandler
+
+### 类型定义
+
+```js
+type IRootHandler<T> = {
+  /** 进入节点时触发 */
+  enter(node: RootNode, content: IContent): void
+
+  /** 进入节点时触发 */
+  exit(node: RootNode, content: IContent): void
+
+  /** 渲染该节点，返回渲染结果 */
+  render(node: RootNode, content: IContent, children: T[]): T
+}
+```
+
+`rootHandler` 特殊的地方在于其 `enter` 和 `exit` 是必须的，不是可选的
+
+这里的 `enter` 和 `exit` 实际上可以做 解析前的初始化 和 解析之后的清理工作
+
+
+## textHandler
+
+### 类型定义
+
+```js
+type ITextHandler<T> = {
+  render: (node: TextNode, content: IContent) => T
+}
+```
+`textHandler` 就是处理文本内容的 `handler`
+
+这也是最简单的 `handler`
+
+`textHandler` 有且只有一个，如果逻辑过于复杂，或者需要多轮次处理，请自行处理

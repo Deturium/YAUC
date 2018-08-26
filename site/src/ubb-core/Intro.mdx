@@ -100,84 +100,35 @@ build(
 总的来说，就是我们会按照 `handlerHub` 的规则来处理我们用 `lex` 和 `parse` 处理之后得到的 AST
 
 
-而这一整套流程的集合也就是 `ubb-core` 的默认导出所做的工作。
+而这一整套流程的集合也就是 `ubb-core` 的默认导出所做的工作
 
 
 ## AST
 
 UBB 的 AST 表示并不复杂。
 
-具体请看左侧 AST 目录下的详细介绍。
+具体请看左侧 [AST 目录](/ubb-core-ast) 下的详细介绍。
 
 
-## handlerHub
+## handler
 
-具体请看左侧 handlerHub 目录下的详细介绍。
+`handler` 是定义了如何转换 AST 到目标输出
 
+`handler` 有多种类型，最终会聚合在一起成为一个 `handlerHub` 作为参数传给 `build` 函数
 
-## 导出 API
-
-这里提供 `ubb-core` 导出的所有 API 的接口定义，具体请看左侧 API 目录下的详细介绍。
-
-现在包括默认导出一共有 6 个 API：
-
-```js
-/**
- * 将 UBB 文本构造成流
- * @param rawUBBText UBB 文本
- */
-function* lex(rawUBBText: string): IterableIterator<IToken> {...}
+具体请看左侧 [handler 目录](/ubb-core-handler) 下的详细介绍
 
 
-/**
- * 解析 TagData
- * @param rawText tagText like "[b, attr=xxx]"
- */
-function parseTagData(rawText: string): ITagData {...}
+## 导出内容
 
+现在包括默认导出 `ubb-core` 一共有 6 个函数，具体请看 [左侧 API](/ubb-core-api) 目录下的详细介绍
 
-/**
- * 将 Token 流构造成 AST
- * @param tokenFlow
- */
-function parse(tokenIterator: IterableIterator<IToken>): RootNode {...}
+除此之外，如果你使用 Typescript，那么还有一些类型定义也被导出
 
+这些定义包括：
 
-/**
- * DFS 构造目标输出
- * @param root AST 根节点
- * @param handlerHub 所有的处理器集合
- * @param initContent 初始上下文状态
- */
-function build<T>(
-  root: RootNode,
-  handlerHub: IHandlerHub<T>,
-  initContent: IContent
-): T {...}
+1. `Token` 相关类型
 
+2. `AST` 相关类型
 
-/**
- * DFS 处理一个节点（不能是根节点）
- * @param node 处理节点
- * @param handlerHub 处理函数
- * @param content 上下文
- */
-function handlerNode<T>(
-  node: ChildNode,
-  handlerHub: IHandlerHub<T>,
-  content: IContent
-): T {...}
-
-
-/**
- * 构造 UBB 文本为 T
- * @param UBBText UBB 文本
- * @param handlerHub 所有 Handler 集合
- * @param initContent 初始化上下文（配置项）
- */
-export default function UBB<T>(
-  UBBText: string,
-  handlerHub: IHandlerHub<T>,
-  initContent: IContent
-): T {...}
-```
+3. `handler` 相关类型

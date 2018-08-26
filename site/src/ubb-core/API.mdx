@@ -74,18 +74,122 @@ const iter = lex("[b] hello world [/b]")
 }
 ```
 
+更多测试用例请看 [lex.spex.ts](https://github.com/Deturium/UBB/blob/master/packages/ubb-core/src/__tests__/lex.spec.ts)
+
 
 ## parseTagData
 
+
+`parseTagData` 用于解析 tagNode 的 tagData 部分，被 tagNode 的构造函数依赖。
+
+### 函数签名
+
+```js
+/**
+ * 解析 TagData
+ * @param rawText tagText like "[b, attr=xxx]"
+ */
+function parseTagData(rawText: string): ITagData
+```
+
+### 使用示例
+
+#### CODE
+```js
+const tagData = parseTagData("[box, border=2, color='rgb(0, 0, 0)']")
+console.log(tagData)
+```
+
+#### OUTPUT
+```js
+{
+  __tagName: "box",
+  box: "",
+  color: "rgb(0, 0, 0)"
+}
+```
+
+更多测试用例请看 [parseTagData.spex.ts](https://github.com/Deturium/UBB/blob/master/packages/ubb-core/src/__tests__/parseTagData.spce.ts)
+
+
 ## parse
+
+`parse` 用于把 Token 流转变为 AST
+
+### 函数签名
+
+```js
+/**
+ * 将 Token 流构造成 AST
+ * @param tokenFlow
+ */
+function parse(tokenIterator: IterableIterator<IToken>): RootNode {...}
+```
 
 
 ## build
 
+`build` 用于将 AST 转变为合适的输出，遍历方式为 DFS(Depth-First-Search)，其需要对应的 `handlerHub` 配合。
+
+### 函数签名
+
+```js
+/**
+ * DFS 构造目标输出
+ * @param root AST 根节点
+ * @param handlerHub 所有的处理器集合
+ * @param initContent 初始上下文状态
+ */
+function build<T>(
+  root: RootNode,
+  handlerHub: IHandlerHub<T>,
+  initContent: IContent
+): T
+```
+
+
 ## handlerNode
+
+有时候为了处理一些特殊情况，我们需要在某个 `hanlder` 内部中断 DFS 过程来调整我们的 AST。
+
+`handlerNode` 用于重新开始一个节点的转换，该节点会作为本次转换的根节点。
+
+### 函数签名
+
+```js
+/**
+ * DFS 处理一个节点（不能是根节点）
+ * @param node 处理节点
+ * @param handlerHub 处理函数
+ * @param content 上下文
+ */
+function handlerNode<T>(
+  node: ChildNode,
+  handlerHub: IHandlerHub<T>,
+  content: IContent
+): T
+```
 
 
 ## default
 
+这是 `ubb-core` 的默认导出，是对以上流程的一次组合，一般情况下，你只需要使用该函数即可。
+
+使用默认导出的时候需要注意一下 ES module 和 commonJS 模块的区别。
 
 
+### 函数签名
+
+```js
+/**
+ * 构造 UBB 文本为 T
+ * @param UBBText UBB 文本
+ * @param handlerHub 所有 Handler 集合
+ * @param initContent 初始化上下文（配置项）
+ */
+export default function UBB<T>(
+  UBBText: string,
+  handlerHub: IHandlerHub<T>,
+  initContent: IContent
+): T
+```
