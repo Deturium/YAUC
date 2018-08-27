@@ -134,7 +134,7 @@ interface IHandlerHub<T> {
 
 1. 闭合的具名标签比如 `[b] bold [/b]` 对应 `specificTagHandlers[b]`
 
-2. 未闭合的标签我们会按照顺序尝试匹配 `generalTagHandlers 中的 `handler`
+2. 未闭合的标签比如 `[ac01]` 我们会按照顺序尝试匹配 `generalTagHandlers` 中的 `handler`
 
 3. 如果还有不能处理的，移交给 `defaultTagHandler` 处理
 

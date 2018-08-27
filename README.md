@@ -10,6 +10,14 @@ Yet Another UBB for CC98.
 这个项目旨在提供一个 UBB 核心帮助开发者将 CC98 的 UBB 转换为 html 或者 ReactNode。
 
 
+其中 ubb-core 和 ubb-react 等稳定之后将发布在 npm 的 @cc98 scope 下
+
+
+## 文档
+
+https://yauc.netlify.com
+
+
 ## CC98
 
 [CC98](https://www.cc98.org/) 是浙江大学最大的校内论坛。
@@ -36,89 +44,31 @@ UBB 在防止 XSS 等风险的同时给予了用户丰富的能力，其表现�
 我们所做的就是一个符合 CC98 论坛格式的专用 UBB 转换器。
 
 
-## ubb-core
+## @cc98/ubb-core
 
-该仓库是解析器核心，对外暴露的核心函数为：
+该仓库是 YAUC 的核心，对外暴露一系列工具函数帮助用户处理 UBB。
 
-```ts
-/**
- * 构造 UBB 文本为 T
- * @param UBBText UBB 文本
- * @param handlerHub 所有 Handler 集合
- * @param initContent 初始化上下文（配置项）
- */
-function UBB<T>(UBBText: string, handlerHub: IHandlerHub<T>, initContent: IContent): T {...}
-```
-
-通过该核心，用户可以编写自定义的规则来决定解析一段 UBB。
+如何使用请看文档站点 UBB-CORE 章节。
 
 
-```ts
-/**
- * 将 UBB 文本构造成流
- * @param rawUBBText UBB 文本
- */
-function* lex(rawUBBText: string): IterableIterator<IToken> {...}
+## @cc98/ubb-react
 
-
-/**
- * 将 Token 流构造成 AST
- * @param tokenFlow
- * @param parseConfig
- */
-function parse(tokenIterator: IterableIterator<IToken>): RootNode {...}
-
-
-/**
- * DFS 构造目标输出
- * @param root AST 根节点
- * @param handlerHub 所有的处理器集合
- * @param initContent 初始上下文状态
- */
-function build<T>(root: RootNode, handlerHub: IHandlerHub<T>, initContent: IContent): T {...}
-```
-
-这3个函数分别提供以下能力：
-- 原始文本分词
-- 通过 Token 流构造 AST(抽象语法树)
-- 通过 AST 构造目标输出
-
-暴露这三个接口只为了方便用户自己把控流程和更好的理解 core 的结构。事实上，如果解析结果无法满足你的需求，那么我提供你直接 hack AST 的能力。
-
-
-AST 的结构和 Handler 请看 site 的文档。
-
-
-## ubb-react
-
-> WARN: 该 repo 还在开发中
+> NOTE: 该 repo 还在开发中
 
 该仓库提供一套 React 的封装来将 UBB 转换为 ReactNode，你可以使用该仓库提供的能力很快的封装一个 UBB_React 组件来做 CC98 UBB 的解析工作。
 
-简单起见，我们只暴露如下接口：
-
-```ts
-/**
- * 将 UBB 文本转换为一个 ReactNode
- */
-function UBBReact(ubbText: string): <React.ReactNode> {...}
-```
-
-
-注意事项：
+注意：
 
 1. 该仓库依赖 ubb-core 提供的能力
 2. 你需要自行安装 peerDependencies，请使用 React 16
 3. 如果你有定制需求，请自行修改对应的 Handler
 
 
-## site
+## @cc98/site
 
-> WARN: 该 repo 开发中，未部署
+该仓库作为该项目的文档站，由 `docz` 驱动，部署在 `netlify`。
 
-该仓库作为该项目的文档站，由 `docz` 驱动。
-
-会提供更加详细的文档说明和交互式演练场。
+提供了详细的文档说明和交互式演练场。
 
 
 

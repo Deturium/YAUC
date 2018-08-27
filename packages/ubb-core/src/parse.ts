@@ -93,7 +93,8 @@ function close(node: ParentNode, recursive = false) {
     children.push(child)
 
     if (child.type === NodeType.TAG && (child as TagNode)._isClose === false) {
-      (child as TagNode).children.forEach(flat)
+      ;(child as TagNode).children.forEach(flat)
+      ;(child as TagNode).children = []
     }
   }
 
