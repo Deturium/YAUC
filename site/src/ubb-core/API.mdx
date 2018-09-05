@@ -148,11 +148,11 @@ function build<T>(
 ```
 
 
-## handlerNode
+## handleNode
 
 有时候为了处理一些特殊情况，我们需要在某个 `hanlder` 内部中断 DFS 过程来调整我们的 AST。
 
-`handlerNode` 用于重新开始一个节点的转换，该节点会作为本次转换的根节点。
+`handleNode` 用于重新开始一个节点的转换，该节点会作为本次转换的根节点。
 
 ### 函数签名
 
@@ -163,7 +163,7 @@ function build<T>(
  * @param handlerHub 处理函数
  * @param content 上下文
  */
-function handlerNode<T>(
+function handleNode<T>(
   node: ChildNode,
   handlerHub: IHandlerHub<T>,
   content: IContent

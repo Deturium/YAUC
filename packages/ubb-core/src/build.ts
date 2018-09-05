@@ -80,7 +80,7 @@ export interface IHandlerHub<T> {
  * @param handlerHub 处理函数
  * @param content 上下文
  */
-export function handlerNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, content: IContent): T {
+export function handleNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, content: IContent): T {
   if (node.type === NodeType.TAG) {
     // HANDLE TAG_NODE
     const tagNode = node as TagNode
@@ -113,7 +113,7 @@ export function handlerNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, cont
     tagHandler.enter && tagHandler.enter(tagNode, content)
 
     if (tagHandler.isRecursive) {
-      const children = tagNode.children.map(child => handlerNode<T>(child, handlerHub, content))
+      const children = tagNode.children.map(child => handleNode<T>(child, handlerHub, content))
       ret = tagHandler.render(tagNode, content, children)
     } else {
       ret = tagHandler.render(tagNode, content)
@@ -134,7 +134,7 @@ function rootDfs<T>(root: RootNode, handlerHub: IHandlerHub<T>, content: IConten
   // 初始化上下文工作
   handlerHub.rootHandler.enter(root, content)
 
-  const children = root.children.map(child => handlerNode<T>(child, handlerHub, content))
+  const children = root.children.map(child => handleNode<T>(child, handlerHub, content))
   const output = handlerHub.rootHandler.render(root, content, children)
 
   // 清理和收尾
