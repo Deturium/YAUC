@@ -1,7 +1,8 @@
 import {
-  IRootHandler,
-  RootNode, IContent,
+  IRootHandler, RootNode,
 } from '@cc98/ubb-core'
+
+import { IContent } from '@cc98/content'
 
 import React from 'react'
 

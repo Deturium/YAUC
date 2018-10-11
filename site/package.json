@@ -12,7 +12,7 @@
     "clean": "rm -rf .docz"
   },
   "dependencies": {
-    "docz": "latest",
+    "docz": "^0.12.5",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "styled-components": "^3.3.3",

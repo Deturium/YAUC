@@ -7,7 +7,7 @@ import {
  * 自定义上下文，在 DFS 时共享
  */
 export interface IContent {
-  [key: string]: any
+  // [key: string]: any
 }
 
 

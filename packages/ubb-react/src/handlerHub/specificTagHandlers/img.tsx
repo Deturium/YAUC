@@ -7,17 +7,18 @@ import { IContent } from '@cc98/content'
 import React from 'react'
 
 const handler: ITagHandler<React.ReactNode> = {
-  isRecursive: true,
+  isRecursive: false,
 
-  render(node: TagNode, content: IContent, children: React.ReactNode[]) {
+  render(node: TagNode, content: IContent) {
     const style: React.CSSProperties = {
-      fontStyle: 'italic',
+      maxWidth: '100%',
     }
 
     return (
-      <span style={style}>
-        { children }
-      </span>
+      <img
+        src={node.innerText}
+        style={style}
+      />
     )
   },
 }

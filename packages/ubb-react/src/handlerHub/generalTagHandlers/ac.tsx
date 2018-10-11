@@ -1,7 +1,8 @@
 import {
-  IGeneralTagHandler,
-  TagNode, IContent,
+  IGeneralTagHandler, TagNode,
 } from '@cc98/ubb-core'
+
+import { IContent } from '@cc98/content'
 
 import React from 'react'
 
