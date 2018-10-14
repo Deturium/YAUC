@@ -5,6 +5,7 @@ import {
 import { IContent } from '@cc98/content'
 
 import React from 'react'
+import { css } from 'emotion'
 
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
@@ -12,12 +13,10 @@ const handler: ITagHandler<React.ReactNode> = {
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
     const { color } = node.tagData
 
-    const style: React.CSSProperties = {
-      color,
-    }
-
     return (
-      <span style={style}>
+      <span className={css`
+        color: ${color}
+      `}>
         { children }
       </span>
     )
