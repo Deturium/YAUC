@@ -2,11 +2,16 @@
   "name": "@cc98/ubb-core",
   "version": "1.0.1",
   "description": "YAUC Core.",
+  "author": "Hydrogen <fanyangliang@gmail.com>",
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/index.js",
   "sideEffects": false,
+  "license": "MIT",
   "scripts": {
     "build": "rm -rf dist && tsc",
     "build:watch": "tsc -w",

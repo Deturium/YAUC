@@ -43,7 +43,7 @@ const handler: ITagHandler<React.ReactNode> = {
 
     return (
       <div className={containerStyle}>
-        {content.quotes!.reverse().map((item, i) => (
+        {content.quotes!.map((item, i) => (
           <div key={i}
             className={cx({[itemStyle]: i !== 0})}
           >
