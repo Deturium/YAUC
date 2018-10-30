@@ -15,6 +15,7 @@ import quote from './quote'
 import size from './size'
 import u from './u'
 import url from './url'
+import sandbox from './sandbox'
 
 
 const tagHandlers: IHandlerHub<React.ReactNode>["specificTagHandlers"] = {
@@ -29,6 +30,7 @@ const tagHandlers: IHandlerHub<React.ReactNode>["specificTagHandlers"] = {
   size,
   u,
   url,
+  sandbox,
 }
 
 export default tagHandlers
