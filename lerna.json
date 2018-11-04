@@ -13,6 +13,5 @@
   "ignoreChanges": [
     "**/__tests__/**",
     "**/*.md"
-  ],
-  "version": "1.0.1"
+  ]
 }

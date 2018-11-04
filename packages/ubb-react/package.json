@@ -6,7 +6,12 @@
   "main": "dist/index.js",
   "sideEffects": false,
   "license": "MIT",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc",
     "build:watch": "tsc -w",
