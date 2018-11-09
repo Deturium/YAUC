@@ -35,7 +35,6 @@ const handler: ITagHandler<React.ReactNode> = {
   },
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
-
     content.quotes!.push(children)
 
     if (content.quoteRoot !== node)
