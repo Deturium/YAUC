@@ -9,6 +9,7 @@ import { css, cx } from 'emotion'
 
 const containerStyle = css`
   padding: 10px;
+  /* TODO: theme */
   background-color: #f5faff;
   border: 1px solid #cccccc;
 `

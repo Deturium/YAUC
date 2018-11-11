@@ -5,7 +5,9 @@ import handlerHub from './handlerHub'
 import { IContent } from '@cc98/content'
 
 const initContent: IContent = {
-  // empty
+  theme: {
+    // TODO:
+  }
 }
 
 export default function UBBReact(ubbText: string) {
