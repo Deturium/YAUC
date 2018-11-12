@@ -7,6 +7,9 @@ declare module '@cc98/content' {
   } from '@cc98/ubb-core'
 
   export interface IContent extends ICoreContent {
+    /**
+     * 主题
+     */
     theme: {
       // TODO:
     },

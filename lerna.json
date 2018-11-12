@@ -1,5 +1,4 @@
 {
-  "lerna": "3.4.3",
   "packages": [
     "packages/*",
     "site/"
@@ -13,5 +12,6 @@
   "ignoreChanges": [
     "**/__tests__/**",
     "**/*.md"
-  ]
+  ],
+  "version": "0.0.0"
 }
