@@ -7,18 +7,15 @@ import { IContent } from '@cc98/content'
 import React from 'react'
 import { css } from 'emotion'
 
-const style = css`
-  font-weight: bold;
-`
-
+//table相关标签说明:https://www.cc98.org/topic/4070950
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
     return (
-      <span className={style}>
+      <tr> 
         {children}
-      </span>
+      </tr>
     )
   },
 }

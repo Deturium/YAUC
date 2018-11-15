@@ -8,7 +8,7 @@ import React from 'react'
 import { css } from 'emotion'
 
 const style = css`
-  font-weight: bold;
+  font-family: Arial;
 `
 
 const handler: ITagHandler<React.ReactNode> = {

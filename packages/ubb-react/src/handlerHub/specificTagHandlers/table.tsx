@@ -8,17 +8,17 @@ import React from 'react'
 import { css } from 'emotion'
 
 const style = css`
-  font-weight: bold;
+ border-collapse: collapse;
 `
-
+//table相关标签说明:https://www.cc98.org/topic/4070950
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
     return (
-      <span className={style}>
+      <table className={style}> 
         {children}
-      </span>
+      </table>
     )
   },
 }
