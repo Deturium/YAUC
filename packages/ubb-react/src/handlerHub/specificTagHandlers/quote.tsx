@@ -7,11 +7,16 @@ import { IContent } from '@cc98/content'
 import React from 'react'
 import { css, cx } from 'emotion'
 
-const containerStyle = css`
+const containerStyleLight = css`
   padding: 10px;
-  /* TODO: theme */
   background-color: #f5faff;
   border: 1px solid #cccccc;
+`
+
+const containerStyleDark = css`
+padding: 10px;
+background-color: #070b50;
+border: 1px solid #cccccc;
 `
 
 const itemStyle = css`
@@ -38,6 +43,13 @@ const handler: ITagHandler<React.ReactNode> = {
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
     content.quotes!.push(children)
 
+    //default theme(light)
+    let containerStyle = containerStyleLight
+    //dark theme
+    if (content.theme && content.theme === 'dark') {
+      containerStyle = containerStyleDark
+    }
+
     if (content.quoteRoot !== node)
       return null
 
@@ -45,7 +57,7 @@ const handler: ITagHandler<React.ReactNode> = {
       <div className={containerStyle}>
         {content.quotes!.map((item, i) => (
           <div key={i}
-            className={cx({[itemStyle]: i !== 0})}
+            className={cx({ [itemStyle]: i !== 0 })}
           >
             {item}
           </div>
