@@ -5,16 +5,23 @@ import {
 import { IContent } from '@cc98/content'
 
 import React from 'react'
+import { css, cx } from 'emotion'
 
-const containerStyle: React.CSSProperties = {
-  padding: 10,
-  backgroundColor: '#f5faff',
-  border: '1px solid #cccccc',
-}
+const containerStyleLight = css`
+  padding: 10px;
+  background-color: #f5faff;
+  border: 1px solid #cccccc;
+`
 
-const itemStyle: React.CSSProperties = {
-  marginTop: '1.2em',
-}
+const containerStyleDark = css`
+padding: 10px;
+background-color: #070b50;
+border: 1px solid #cccccc;
+`
+
+const itemStyle = css`
+  margin-top: 1.2em;
+`
 
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
@@ -34,18 +41,25 @@ const handler: ITagHandler<React.ReactNode> = {
   },
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
-
     content.quotes!.push(children)
+
+    //default theme(light)
+    let containerStyle = containerStyleLight
+    //dark theme
+    if (content.theme && content.theme === 'dark') {
+      containerStyle = containerStyleDark
+    }
 
     if (content.quoteRoot !== node)
       return null
 
     return (
-      <div style={containerStyle}>
-        {content.quotes!.reverse().map((item, i) => (
+      <div className={containerStyle}>
+        {content.quotes!.map((item, i) => (
           <div key={i}
-            style={i === 0 ? undefined : itemStyle}
-          >{item}
+            className={cx({ [itemStyle]: i !== 0 })}
+          >
+            {item}
           </div>
         ))}
       </div>

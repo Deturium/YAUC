@@ -5,17 +5,18 @@ import {
 import { IContent } from '@cc98/content'
 
 import React from 'react'
+import { css } from 'emotion'
+
+const style = css`
+  text-decoration: underline;
+`
 
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
-    const style: React.CSSProperties = {
-      textDecoration: 'underline',
-    }
-
     return (
-      <span style={style}>
+      <span className={style}>
         { children }
       </span>
     )

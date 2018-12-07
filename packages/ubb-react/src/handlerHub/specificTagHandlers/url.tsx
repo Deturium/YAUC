@@ -9,7 +9,7 @@ import URL from 'url-parse'
 
 // Avoid XSS:
 // https://medium.com/javascript-security/avoiding-xss-in-react-is-still-hard-d2b5c7ad9412
-function isSafe(dangerousURL: string) {
+export function isSafe(dangerousURL: string) {
   const url = URL(dangerousURL.trim(), {})
   if (url.protocol === 'http:') return true
   if (url.protocol === 'https:') return true

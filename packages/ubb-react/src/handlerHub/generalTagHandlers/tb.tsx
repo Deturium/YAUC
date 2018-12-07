@@ -8,27 +8,27 @@ import React from 'react'
 import { css } from 'emotion'
 
 const style = css`
-  width: 60px;
+  width: 30px;
 `
 
 const handler: IGeneralTagHandler<React.ReactNode> = {
   isRecursive: true,
 
-  match: /ac\d{2}/i,
+  match: /tb\d{2}/i,
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
 
-    const acID = node.tagData.__tagName__
+    const tbID = node.tagData.__tagName__
       .slice(2)
 
     // TODO: config baseURL ?
-    const url = `https://www.cc98.org/static/images/ac/${acID}.png`
+    const url = `https://www.cc98.org/static/images/tb/tb${tbID}.png`
 
     return (
       <img
         className={style}
         src={url}
-        alt={`[ ac${acID} ]`}
+        alt={`[ tb${tbID} ]`}
       />
     )
   },

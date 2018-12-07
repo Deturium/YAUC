@@ -13,15 +13,16 @@
   },
   "dependencies": {
     "docz": "^0.12.5",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
-    "styled-components": "^3.3.3",
+    "docz-theme-default": "^0.12.5",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "styled-components": "^3.4.10",
     "@cc98/ubb-core": "^1.0.0",
     "@cc98/ubb-react": "^1.0.0"
   },
   "devDependencies": {
-    "@types/react": "^16.4.11",
-    "@types/react-dom": "^16.0.7",
-    "typescript": "^3.0.1"
+    "@types/react": "^16.4.16",
+    "@types/react-dom": "^16.0.9",
+    "typescript": "^3.1.3"
   }
 }

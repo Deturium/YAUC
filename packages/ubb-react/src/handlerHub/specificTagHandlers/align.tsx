@@ -5,6 +5,7 @@ import {
 import { IContent } from '@cc98/content'
 
 import React from 'react'
+import { css } from 'emotion'
 
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
@@ -12,12 +13,10 @@ const handler: ITagHandler<React.ReactNode> = {
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
     const { align } = node.tagData
 
-    const style = {
-      textAlign: align,
-    } as React.CSSProperties
-
     return (
-      <div style={style}>
+      <div className={css`
+        text-align: ${align};
+      `}>
         { children }
       </div>
     )

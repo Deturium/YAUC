@@ -14,21 +14,21 @@ const style = css`
 const handler: IGeneralTagHandler<React.ReactNode> = {
   isRecursive: true,
 
-  match: /ac\d{2}/i,
+  match: /ms\d{2}/i,
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
 
-    const acID = node.tagData.__tagName__
+    const msID = node.tagData.__tagName__
       .slice(2)
 
     // TODO: config baseURL ?
-    const url = `https://www.cc98.org/static/images/ac/${acID}.png`
+    const url = `https://www.cc98.org/static/images/ms/ms${msID}.png`
 
     return (
       <img
         className={style}
         src={url}
-        alt={`[ ac${acID} ]`}
+        alt={`[ ms${msID} ]`}
       />
     )
   },

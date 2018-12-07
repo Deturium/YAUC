@@ -5,19 +5,20 @@ import {
 import { IContent } from '@cc98/content'
 
 import React from 'react'
+import { css } from 'emotion'
+
+const style = css`
+  max-width: 100%;
+`
 
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: false,
 
   render(node: TagNode, content: IContent) {
-    const style: React.CSSProperties = {
-      maxWidth: '100%',
-    }
-
     return (
       <img
+        className={style}
         src={node.innerText}
-        style={style}
       />
     )
   },

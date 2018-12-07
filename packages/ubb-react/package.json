@@ -2,14 +2,19 @@
   "name": "@cc98/ubb-react",
   "version": "1.0.1",
   "description": "YAUC React version.",
+  "author": "Hydrogen <fanyangliang@gmail.com>",
   "main": "dist/index.js",
   "sideEffects": false,
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "tsc": "rm -rf dist && tsc",
-    "watch": "tsc -w",
+    "build": "rm -rf dist && tsc",
+    "build:watch": "tsc -w",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -17,11 +22,14 @@
     "url-parse": "^1.4.3"
   },
   "peerDependencies": {
-    "react": "^16.4.2"
+    "emotion": ">=9.2.0",
+    "react": ">=16.3.0"
   },
   "devDependencies": {
-    "@types/react": "^16.4.11",
+    "@types/react": "^16.4.16",
     "@types/url-parse": "^1.4.1",
-    "typescript": "^3.0.1"
+    "emotion": "^9.2.12",
+    "react": "^16.5.2",
+    "typescript": "^3.1.3"
   }
 }

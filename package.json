@@ -11,8 +11,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "clean": "lerna run clean && lerna clean",
-    "tsc": "lerna run tsc",
-    "watch": "lerna run --parallel watch",
+    "build": "lerna run build",
+    "build:watch": "lerna run --parallel build:watch",
     "test": "lerna run --parallel test",
     "docz:dev": "lerna run --parallel --scope @cc98/ubb-site docz:dev",
     "docz:build": "lerna run --parallel --scope @cc98/ubb-site docz:build"

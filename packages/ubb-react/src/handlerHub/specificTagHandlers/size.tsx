@@ -4,6 +4,7 @@ import {
 
 import { IContent } from '@cc98/content'
 import React from 'react'
+import { css } from 'emotion'
 
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
@@ -16,12 +17,10 @@ const handler: ITagHandler<React.ReactNode> = {
     fontSize = fontSize > 7 ? 3.5 : (fontSize / 2)
     fontSize /= 1.5
 
-    const style: React.CSSProperties = {
-      fontSize: `${fontSize}rem`,
-    }
-
     return (
-      <span style={style}>
+      <span className={css`
+        font-size: ${fontSize}rem;
+      `}>
         { children }
       </span>
     )

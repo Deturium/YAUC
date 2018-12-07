@@ -8,7 +8,7 @@ import React from 'react'
 import { css } from 'emotion'
 
 const style = css`
-  font-weight: bold;
+  text-align: center;
 `
 
 const handler: ITagHandler<React.ReactNode> = {
@@ -16,9 +16,9 @@ const handler: ITagHandler<React.ReactNode> = {
 
   render(node: TagNode, content: IContent, children: React.ReactNode[]) {
     return (
-      <span className={style}>
+      <div className={style}>
         {children}
-      </span>
+      </div>
     )
   },
 }

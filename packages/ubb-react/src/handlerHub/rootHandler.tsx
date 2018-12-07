@@ -5,23 +5,21 @@ import {
 import { IContent } from '@cc98/content'
 
 import React from 'react'
+import { css } from 'emotion'
+
+const style = css`
+  white-space: pre-wrap;
+  word-break: break-all;
+`
 
 const handler: IRootHandler<React.ReactNode> = {
+  enter(node: RootNode, content: IContent) {},
 
-  enter(node: RootNode, content: IContent) {
-
-  },
-
-  exit(node: RootNode, content: IContent) {
-
-  },
+  exit(node: RootNode, content: IContent) {},
 
   render(node: RootNode, content: IContent, children: React.ReactNode[]) {
     return (
-      <div style={{
-        whiteSpace: "pre-wrap",
-        wordBreak: "break-all",
-      }}>
+      <div className={style}>
         { children }
       </div>
     )

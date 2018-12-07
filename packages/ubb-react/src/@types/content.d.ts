@@ -8,6 +8,12 @@ declare module '@cc98/content' {
 
   export interface IContent extends ICoreContent {
     /**
+     * 主题
+     */
+    theme: {
+      // TODO:
+    },
+    /**
      * 最外层的 [quote]
      */
     quoteRoot?: TagNode | null,
