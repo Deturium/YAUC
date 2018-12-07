@@ -2,7 +2,7 @@ import {
   IGeneralTagHandler, TagNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 import { css } from 'emotion'
@@ -16,7 +16,7 @@ const handler: IGeneralTagHandler<React.ReactNode> = {
 
   match: /[acf]:/i,
 
-  render(node: TagNode, content: IContent, children: React.ReactNode[]) {
+  render(node: TagNode, context: IContext, children: React.ReactNode[]) {
 
     const tagName = node.tagData.__tagName__
     const mahjongType = tagName[0]

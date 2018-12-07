@@ -24,20 +24,20 @@ interface RecursiveTagHandler<T> {
   isRecursive: true
 
   /** 进入节点时触发 */
-  enter?(node: TagNode, content: IContent): void
+  enter?(node: TagNode, context: IContext): void
 
   /** 离开节点时触发 */
-  exit?(node: TagNode, content: IContent): void
+  exit?(node: TagNode, context: IContext): void
 
   /** 渲染该节点，返回渲染结果 */
-  render(node: TagNode, content: IContent, children: T[]): T
+  render(node: TagNode, context: IContext, children: T[]): T
 }
 
 interface NotRecursiveTagHandler<T> {
   isRecursive: false
-  enter?(node: TagNode, content: IContent): void
-  exit?(node: TagNode, content: IContent): void
-  render(node: TagNode, content: IContent): T
+  enter?(node: TagNode, context: IContext): void
+  exit?(node: TagNode, context: IContext): void
+  render(node: TagNode, context: IContext): T
 }
 ```
 
@@ -55,13 +55,13 @@ interface NotRecursiveTagHandler<T> {
 
 我们知道转换过程实际是一个 DFS 的过程
 
-`node` 就是我们 DFS 到的当前节点，`content` 是 DFS 过程中的上下文，这个上下文贯穿始终，可以在任何节点修改，而 `children` 就是该节点所有子节点的渲染结果
+`node` 就是我们 DFS 到的当前节点，`context` 是 DFS 过程中的上下文，这个上下文贯穿始终，可以在任何节点修改，而 `children` 就是该节点所有子节点的渲染结果
 
 那么假如我要处理一个加粗的标签，那么我可以这么做：
 
 ```js
 {
-  render(node: TagNode, content: IContent, children: string[]): string {
+  render(node: TagNode, context: IContext, children: string[]): string {
     return `<span style="font-weight=bold">${children.join('')}</span>`
   }
 }
@@ -76,26 +76,26 @@ interface NotRecursiveTagHandler<T> {
 
 ```js
 {
-  enter(node: TagNode, content: IContent): void {
-    if (content.cnt > content.max) {
-      content.max = content.cnt
+  enter(node: TagNode, context: IContext): void {
+    if (context.cnt > context.max) {
+      context.max = context.cnt
     }
-    content.cnt++
+    context.cnt++
   }
 
-  exit(node: TagNode, content: IContent): void {
-    content.cnt--
+  exit(node: TagNode, context: IContext): void {
+    context.cnt--
   }
 }
 ```
 
-这样遍历完成之后，`content.max` 就是我们想知道的最深嵌套层数了
+这样遍历完成之后，`context.max` 就是我们想知道的最深嵌套层数了
 
 当然这是示例，实际上，这两个钩子的真正用处体现在以下两点:
 
 1. 明确的让你知道自己的解析过程到达了什么位置
 
-2. 让你能够去直接修改 AST 或者通过改变 `content` 来改变渲染行为
+2. 让你能够去直接修改 AST 或者通过改变 `context` 来改变渲染行为
 
 
 ## HandlerHub
@@ -193,13 +193,13 @@ type IGeneralTagHandler<T> = RecursiveGeneralTagHandler<T> | NotRecursiveGeneral
 ```js
 type IRootHandler<T> = {
   /** 进入节点时触发 */
-  enter(node: RootNode, content: IContent): void
+  enter(node: RootNode, context: IContext): void
 
   /** 进入节点时触发 */
-  exit(node: RootNode, content: IContent): void
+  exit(node: RootNode, context: IContext): void
 
   /** 渲染该节点，返回渲染结果 */
-  render(node: RootNode, content: IContent, children: T[]): T
+  render(node: RootNode, context: IContext, children: T[]): T
 }
 ```
 
@@ -214,7 +214,7 @@ type IRootHandler<T> = {
 
 ```js
 type ITextHandler<T> = {
-  render: (node: TextNode, content: IContent) => T
+  render: (node: TextNode, context: IContext) => T
 }
 ```
 `textHandler` 就是处理文本内容的 `handler`

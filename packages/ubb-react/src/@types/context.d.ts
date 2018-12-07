@@ -1,12 +1,12 @@
-declare module '@cc98/content' {
+declare module '@cc98/context' {
 
   import React, { ReactNode } from 'react'
   import {
     TagNode,
-    IContent as ICoreContent,
+    IContext as ICoreContext,
   } from '@cc98/ubb-core'
 
-  export interface IContent extends ICoreContent {
+  export interface IContext extends ICoreContext {
     /**
      * 主题
      */

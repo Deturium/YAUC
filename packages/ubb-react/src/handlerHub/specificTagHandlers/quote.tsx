@@ -2,7 +2,7 @@ import {
   ITagHandler, TagNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 import { css, cx } from 'emotion'
@@ -26,36 +26,36 @@ const itemStyle = css`
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
 
-  enter(node: TagNode, content: IContent) {
-    if (!content.quoteRoot) {
-      content.quoteRoot = node
-      content.quotes = []
+  enter(node: TagNode, context: IContext) {
+    if (!context.quoteRoot) {
+      context.quoteRoot = node
+      context.quotes = []
     }
   },
 
-  exit(node: TagNode, content: IContent) {
-    if (content.quoteRoot === node) {
-      content.quoteRoot = null
-      content.quotes = []
+  exit(node: TagNode, context: IContext) {
+    if (context.quoteRoot === node) {
+      context.quoteRoot = null
+      context.quotes = []
     }
   },
 
-  render(node: TagNode, content: IContent, children: React.ReactNode[]) {
-    content.quotes!.push(children)
+  render(node: TagNode, context: IContext, children: React.ReactNode[]) {
+    context.quotes!.push(children)
 
     //default theme(light)
     let containerStyle = containerStyleLight
     //dark theme
-    if (content.theme && content.theme === 'dark') {
+    if (context.theme && context.theme === 'dark') {
       containerStyle = containerStyleDark
     }
 
-    if (content.quoteRoot !== node)
+    if (context.quoteRoot !== node)
       return null
 
     return (
       <div className={containerStyle}>
-        {content.quotes!.map((item, i) => (
+        {context.quotes!.map((item, i) => (
           <div key={i}
             className={cx({ [itemStyle]: i !== 0 })}
           >

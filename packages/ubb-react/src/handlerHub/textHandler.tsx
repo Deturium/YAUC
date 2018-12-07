@@ -3,12 +3,12 @@ import {
   TextNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 
 const handler: ITextHandler<React.ReactNode> = {
-  render(node: TextNode, content: IContent) {
+  render(node: TextNode, context: IContext) {
     return node.text
   },
 }

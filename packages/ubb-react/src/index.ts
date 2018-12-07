@@ -2,20 +2,20 @@ import React from 'react'
 import UBB from '@cc98/ubb-core'
 
 import handlerHub from './handlerHub'
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
-const defaultContent: IContent = {
+const defaultContext: IContext = {
   theme: {
     // TODO:
   }
 }
 
-export default function UBBReact(ubbText: string, options?: Partial<IContent>) {
+export default function UBBReact(ubbText: string, options?: Partial<IContext>) {
   return UBB<React.ReactNode>(
     ubbText,
     handlerHub,
     {
-      ...defaultContent,
+      ...defaultContext,
       ...options,
     }
   )

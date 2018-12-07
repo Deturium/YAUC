@@ -2,7 +2,7 @@ import {
   ITagHandler, TagNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 import { css } from 'emotion'
@@ -12,7 +12,7 @@ import { isSafe } from './url'
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: false,
 
-  render(node: TagNode, content: IContent) {
+  render(node: TagNode, context: IContext) {
     const { url, width, height } = node.tagData
 
     if (!isSafe(url) && !('sandbox' in document.createElement('iframe'))) {

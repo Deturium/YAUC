@@ -2,7 +2,7 @@ import {
   IRootHandler, RootNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 import { css } from 'emotion'
@@ -13,11 +13,11 @@ const style = css`
 `
 
 const handler: IRootHandler<React.ReactNode> = {
-  enter(node: RootNode, content: IContent) {},
+  enter(node: RootNode, context: IContext) {},
 
-  exit(node: RootNode, content: IContent) {},
+  exit(node: RootNode, context: IContext) {},
 
-  render(node: RootNode, content: IContent, children: React.ReactNode[]) {
+  render(node: RootNode, context: IContext, children: React.ReactNode[]) {
     return (
       <div className={style}>
         { children }

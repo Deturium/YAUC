@@ -138,12 +138,12 @@ function parse(tokenIterator: IterableIterator<IToken>): RootNode {...}
  * DFS 构造目标输出
  * @param root AST 根节点
  * @param handlerHub 所有的处理器集合
- * @param initContent 初始上下文状态
+ * @param initContext 初始上下文状态
  */
 function build<T>(
   root: RootNode,
   handlerHub: IHandlerHub<T>,
-  initContent: IContent
+  initContext: IContext
 ): T
 ```
 
@@ -161,12 +161,12 @@ function build<T>(
  * DFS 处理一个节点（不能是根节点）
  * @param node 处理节点
  * @param handlerHub 处理函数
- * @param content 上下文
+ * @param context 上下文
  */
 function handleNode<T>(
   node: ChildNode,
   handlerHub: IHandlerHub<T>,
-  content: IContent
+  context: IContext
 ): T
 ```
 
@@ -185,11 +185,11 @@ function handleNode<T>(
  * 构造 UBB 文本为 T
  * @param UBBText UBB 文本
  * @param handlerHub 所有 Handler 集合
- * @param initContent 初始化上下文（配置项）
+ * @param initContext 初始化上下文（配置项）
  */
 export default function UBB<T>(
   UBBText: string,
   handlerHub: IHandlerHub<T>,
-  initContent: IContent
+  initContext: IContext
 ): T
 ```

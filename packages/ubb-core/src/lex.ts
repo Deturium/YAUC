@@ -1,5 +1,3 @@
-import { TagNode } from "./parse";
-
 export const enum TokenType {
   /** 纯文本 */
   TEXT,

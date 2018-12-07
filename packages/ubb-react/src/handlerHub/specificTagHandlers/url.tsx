@@ -2,7 +2,7 @@ import {
   ITagHandler, TagNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 import URL from 'url-parse'
@@ -19,7 +19,7 @@ export function isSafe(dangerousURL: string) {
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: false,
 
-  render(node: TagNode, content: IContent) {
+  render(node: TagNode, context: IContext) {
     const innerText = node.innerText
     const dangerousURL  = node.tagData.url || innerText
 

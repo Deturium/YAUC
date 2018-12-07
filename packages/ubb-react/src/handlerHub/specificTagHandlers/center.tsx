@@ -2,7 +2,7 @@ import {
   ITagHandler, TagNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 import { css } from 'emotion'
@@ -14,7 +14,7 @@ const style = css`
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: true,
 
-  render(node: TagNode, content: IContent, children: React.ReactNode[]) {
+  render(node: TagNode, context: IContext, children: React.ReactNode[]) {
     return (
       <div className={style}>
         {children}

@@ -2,14 +2,14 @@ import {
   ITagHandler, TagNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: false,
 
-  render(node: TagNode, content: IContent) {
+  render(node: TagNode, context: IContext) {
     return node.children.map(n => n.text)
   },
 }

@@ -2,7 +2,7 @@ import {
   ITagHandler, TagNode,
 } from '@cc98/ubb-core'
 
-import { IContent } from '@cc98/content'
+import { IContext } from '@cc98/context'
 
 import React from 'react'
 import { css } from 'emotion'
@@ -31,7 +31,7 @@ counter-increment: li;
 const handler: ITagHandler<React.ReactNode> = {
   isRecursive: false,
 
-  render(node: TagNode, content: IContent) {
+  render(node: TagNode, context: IContext) {
     let codes = node.innerText.split('\n');
     while (!codes[0] && codes.length > 0) codes.shift();
     while (!codes[codes.length - 1] && codes.length > 0) codes.pop();

@@ -6,8 +6,8 @@ import {
 /**
  * 自定义上下文，在 DFS 时共享
  */
-export interface IContent {
-  // [key: string]: any
+export interface IContext {
+  [key: string]: any
 }
 
 
@@ -15,18 +15,18 @@ interface RecursiveTagHandler<T> {
   /** 是否递归处理子标签 */
   isRecursive: true
   /** 进入节点时触发 */
-  enter?(node: TagNode, content: IContent): void
+  enter?(node: TagNode, context: IContext): void
   /** 离开节点时触发 */
-  exit?(node: TagNode, content: IContent): void
+  exit?(node: TagNode, context: IContext): void
   /** 渲染该节点，返回渲染结果 */
-  render(node: TagNode, content: IContent, children: T[]): T
+  render(node: TagNode, context: IContext, children: T[]): T
 }
 
 interface NotRecursiveTagHandler<T> {
   isRecursive: false
-  enter?(node: TagNode, content: IContent): void
-  exit?(node: TagNode, content: IContent): void
-  render(node: TagNode, content: IContent): T
+  enter?(node: TagNode, context: IContext): void
+  exit?(node: TagNode, context: IContext): void
+  render(node: TagNode, context: IContext): T
 }
 
 interface RecursiveGeneralTagHandler<T> extends RecursiveTagHandler<T> {
@@ -39,9 +39,9 @@ interface NotRecursiveGeneralTagHandler<T> extends NotRecursiveTagHandler<T> {
 }
 
 export type IRootHandler<T> = {
-  enter(node: RootNode, content: IContent): void
-  exit(node: RootNode, content: IContent): void
-  render(node: RootNode, content: IContent, children: T[]): T
+  enter(node: RootNode, context: IContext): void
+  exit(node: RootNode, context: IContext): void
+  render(node: RootNode, context: IContext, children: T[]): T
 }
 
 export type ITagHandler<T> = RecursiveTagHandler<T> | NotRecursiveTagHandler<T>
@@ -49,7 +49,7 @@ export type ITagHandler<T> = RecursiveTagHandler<T> | NotRecursiveTagHandler<T>
 export type IGeneralTagHandler<T> = RecursiveGeneralTagHandler<T> | NotRecursiveGeneralTagHandler<T>
 
 export type ITextHandler<T> = {
-  render: (node: TextNode, content: IContent) => T
+  render(node: TextNode, context: IContext): T
 }
 
 
@@ -78,9 +78,9 @@ export interface IHandlerHub<T> {
  * DFS 处理一个节点（不能是根节点）
  * @param node 处理节点
  * @param handlerHub 处理函数
- * @param content 上下文
+ * @param context 上下文
  */
-export function handleNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, content: IContent): T {
+export function handleNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, context: IContext): T {
   if (node.type === NodeType.TAG) {
     // HANDLE TAG_NODE
     const tagNode = node as TagNode
@@ -110,35 +110,35 @@ export function handleNode<T>(node: ChildNode, handlerHub: IHandlerHub<T>, conte
 
     let ret: T
     // enter the node
-    tagHandler.enter && tagHandler.enter(tagNode, content)
+    tagHandler.enter && tagHandler.enter(tagNode, context)
 
     if (tagHandler.isRecursive) {
-      const children = tagNode.children.map(child => handleNode<T>(child, handlerHub, content))
-      ret = tagHandler.render(tagNode, content, children)
+      const children = tagNode.children.map(child => handleNode<T>(child, handlerHub, context))
+      ret = tagHandler.render(tagNode, context, children)
     } else {
-      ret = tagHandler.render(tagNode, content)
+      ret = tagHandler.render(tagNode, context)
     }
 
     // exit the node
-    tagHandler.exit && tagHandler.exit(tagNode, content)
+    tagHandler.exit && tagHandler.exit(tagNode, context)
 
     return ret
 
   } else {
     // HANDLE TEXT_NODE
-    return handlerHub.textHandler.render(node as TextNode, content)
+    return handlerHub.textHandler.render(node as TextNode, context)
   }
 }
 
-function rootDfs<T>(root: RootNode, handlerHub: IHandlerHub<T>, content: IContent):T {
+function rootDfs<T>(root: RootNode, handlerHub: IHandlerHub<T>, context: IContext):T {
   // 初始化上下文工作
-  handlerHub.rootHandler.enter(root, content)
+  handlerHub.rootHandler.enter(root, context)
 
-  const children = root.children.map(child => handleNode<T>(child, handlerHub, content))
-  const output = handlerHub.rootHandler.render(root, content, children)
+  const children = root.children.map(child => handleNode<T>(child, handlerHub, context))
+  const output = handlerHub.rootHandler.render(root, context, children)
 
   // 清理和收尾
-  handlerHub.rootHandler.exit(root, content)
+  handlerHub.rootHandler.exit(root, context)
   return output
 }
 
@@ -146,8 +146,8 @@ function rootDfs<T>(root: RootNode, handlerHub: IHandlerHub<T>, content: IConten
  * DFS 构造目标输出
  * @param root AST 根节点
  * @param handlerHub
- * @param initContent
+ * @param initContext
  */
-export function build<T>(root: RootNode, handlerHub: IHandlerHub<T>, initContent: IContent): T {
-  return rootDfs<T>(root, handlerHub, initContent)
+export function build<T>(root: RootNode, handlerHub: IHandlerHub<T>, initContext: IContext): T {
+  return rootDfs<T>(root, handlerHub, initContext)
 }
