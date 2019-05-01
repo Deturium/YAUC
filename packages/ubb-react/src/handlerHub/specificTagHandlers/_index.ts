@@ -11,7 +11,6 @@ import center from './center'
 import color from './color'
 import cursor from './cursor'
 import del from './del'
-import english from './english'
 import font from './font'
 import i from './i'
 import img from './img'
@@ -40,7 +39,6 @@ const tagHandlers: IHandlerHub<React.ReactNode>["specificTagHandlers"] = {
   sandbox,
   center,
   cursor,
-  english,
   font,
   left,
   right,
