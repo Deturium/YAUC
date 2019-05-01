@@ -6,35 +6,28 @@ import React from 'react'
 
 import align from './align'
 import b from './b'
+import bili from './bili'
+import center from './center'
 import color from './color'
+import cursor from './cursor'
 import del from './del'
+import english from './english'
+import font from './font'
 import i from './i'
 import img from './img'
+import left from './left'
 import noubb from './noubb'
 import quote from './quote'
+import right from './right'
+import sandbox from './sandbox'
 import size from './size'
 import u from './u'
 import url from './url'
-import sandbox from './sandbox'
 
-import center from './center'
-import code from './code'
-import cursor from './cursor'
-import english from './english'
-import font from './font'
-import left from './left'
-import right from './right'
-import table from './table'
-import td from './td'
-import th from './th'
-import tr from './tr'
-
-/*
- *TODO:audio,bili,glow?,md,pm,topic,upload,user,video
- */
 const tagHandlers: IHandlerHub<React.ReactNode>["specificTagHandlers"] = {
   align,
   b,
+  bili,
   color,
   del,
   i,
@@ -46,16 +39,11 @@ const tagHandlers: IHandlerHub<React.ReactNode>["specificTagHandlers"] = {
   url,
   sandbox,
   center,
-  code,
   cursor,
   english,
   font,
   left,
   right,
-  table,
-  td,
-  th,
-  tr,
 }
 
 export default tagHandlers

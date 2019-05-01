@@ -8,7 +8,7 @@ import React from 'react'
 import { css } from 'emotion'
 
 /**
- * TODO: 这里是仿照V3的引用样式，需要考虑pwa是否还要另外的设计以及不同主题下的样式
+ * TODO: 这里是仿照V3的引用样式
  */
 const style = css`
   background-color: #F5FAFF;
@@ -19,11 +19,11 @@ const style = css`
 `
 
 const handler: IGeneralTagHandler<React.ReactNode> = {
-  isRecursive: true,
+  isRecursive: false,
 
   match: /needreply/,
 
-  render(node: TagNode, context: IContext, children: React.ReactNode[]) {
+  render(node: TagNode, context: IContext) {
 
     return (
       <div>

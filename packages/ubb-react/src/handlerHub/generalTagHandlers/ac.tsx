@@ -7,6 +7,8 @@ import { IContext } from '@cc98/context'
 import React from 'react'
 import { css } from 'emotion'
 
+import { IMG_BASE_URL } from '../../config'
+
 const style = css`
   width: 60px;
 `
@@ -21,8 +23,7 @@ const handler: IGeneralTagHandler<React.ReactNode> = {
     const acID = node.tagData.__tagName__
       .slice(2)
 
-    // TODO: config baseURL ?
-    const url = `https://www.cc98.org/static/images/ac/${acID}.png`
+    const url = `${IMG_BASE_URL}/ac/${acID}.png`
 
     return (
       <img

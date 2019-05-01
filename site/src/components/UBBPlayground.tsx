@@ -48,7 +48,7 @@ class UBBPlayground extends React.Component<Props, State>{
           value={text}
           placeholder="UBB CODE"
           autoFocus={true} spellCheck={false}
-          onChange={(e) => this.inputHandle(e)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => this.inputHandle(e)}
         />
         {
           text && <UBBContainerStyled>

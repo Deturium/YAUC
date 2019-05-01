@@ -18,6 +18,6 @@
     "docz:build": "lerna run --parallel --scope @cc98/ubb-site docz:build"
   },
   "devDependencies": {
-    "lerna": "^3.4.3"
+    "lerna": "^3.13.4"
   }
 }

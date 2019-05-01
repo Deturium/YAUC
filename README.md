@@ -10,7 +10,7 @@ Yet Another UBB for CC98.
 这个项目旨在提供一个 UBB 核心帮助开发者将 CC98 的 UBB 转换为 html 或者 ReactNode。
 
 
-其中 ubb-core 和 ubb-react 等稳定之后将发布在 npm 的 @cc98 scope 下
+其中 ubb-core 和 ubb-react 将发布在 npm 的 @cc98 scope 下
 
 
 ## 文档
@@ -53,7 +53,7 @@ UBB 在防止 XSS 等风险的同时给予了用户丰富的能力，其表现�
 
 ## @cc98/ubb-react
 
-> NOTE: 该 repo 还在开发中
+> NOTE: 该 repo 已经不维护
 
 该仓库提供一套 React 的封装来将 UBB 转换为 ReactNode，你可以使用该仓库提供的能力很快的封装一个 UBB_React 组件来做 CC98 UBB 的解析工作。
 

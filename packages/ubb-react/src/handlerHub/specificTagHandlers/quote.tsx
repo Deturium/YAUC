@@ -7,16 +7,10 @@ import { IContext } from '@cc98/context'
 import React from 'react'
 import { css, cx } from 'emotion'
 
-const containerStyleLight = css`
+const containerStyle = css`
   padding: 10px;
   background-color: #f5faff;
   border: 1px solid #cccccc;
-`
-
-const containerStyleDark = css`
-padding: 10px;
-background-color: #070b50;
-border: 1px solid #cccccc;
 `
 
 const itemStyle = css`
@@ -42,13 +36,6 @@ const handler: ITagHandler<React.ReactNode> = {
 
   render(node: TagNode, context: IContext, children: React.ReactNode[]) {
     context.quotes!.push(children)
-
-    //default theme(light)
-    let containerStyle = containerStyleLight
-    //dark theme
-    if (context.theme && context.theme === 'dark') {
-      containerStyle = containerStyleDark
-    }
 
     if (context.quoteRoot !== node)
       return null
